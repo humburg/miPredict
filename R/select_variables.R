@@ -1,4 +1,4 @@
-#' @import glmnet
+#' @importFrom glmnetUtils cv.glmnet
 #' @export
 select_variables <-
 function(data, response, family="binomial", ...){
