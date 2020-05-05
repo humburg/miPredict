@@ -4,8 +4,8 @@
 #' @importFrom fmsb NagelkerkeR2
 #' @export
 fit_model <-
-function(data, outcome, s="lambda.min") {
-  fit <- select_variables(data, outcome)
+function(data, outcome, family="binomial", s="lambda.min") {
+  fit <- select_variables(data, outcome, family)
   cand_models <- candidate_models(fit, s=s, response = outcome)
   model <- select_model(cand_models, data)
   pooled_model <- pool_model(model, data)
