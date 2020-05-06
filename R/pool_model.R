@@ -1,4 +1,5 @@
 #' @import mice
+#' @export
 pool_model <-
 function(model, data) {
   estimates <- pool(model$fit)

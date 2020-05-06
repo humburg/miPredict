@@ -1,4 +1,4 @@
-#' @importFrom fmsb NagelkerkeR2
+#' @export
 pool_predictions <-
 function(pred) {
   w <- rep(1/ncol(pred), ncol(pred))

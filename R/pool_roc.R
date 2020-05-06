@@ -1,6 +1,7 @@
 #' @importFrom pROC coords
 #' @importFrom pROC ci.se
 #' @import mice
+#' @export
 pool_roc <-
 function(roc, n) {
   fpr <- sort(unique(unlist(lapply(roc, coords, ret="fpr", drop=TRUE, transpose=FALSE))))
