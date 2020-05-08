@@ -1,5 +1,6 @@
 #' @import mice
-#' @import stats
+#' @importFrom stats glm
+#' @importFrom stats binomial
 #' @importFrom tidyr %>%
 #' @export
 select_model <-

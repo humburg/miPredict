@@ -1,3 +1,5 @@
+#' @importFrom stats coef
+#' @importFrom stats as.formula
 #' @export
 candidate_models <-
 function(fit_list, s="lambda.min", min.rate=0.5, response="Poor_Outcome") {

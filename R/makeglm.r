@@ -1,7 +1,9 @@
 ## Based on code by MrFlick via GitHub
 ## https://gist.github.com/MrFlick/ae299d8f3760f02de6bf
 
-#' @import stats
+#' @importFrom stats terms
+#' @importFrom stats model.frame
+#' @importFrom stats .MFclass
 makeglm <- function(formula, ..., family, data=NULL) {
   dots <- list(...)
   out<-list()

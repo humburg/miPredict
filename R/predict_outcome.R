@@ -1,8 +1,8 @@
-#' @import stats
+#' @importFrom stats predict
 #' @export
 predict_outcome <-
 function(fit, data, ...) {
-  stopifnot(".imp" %in% names(data))
+  data <- data_long(data)
   pred <- by(data, data$.imp, function(x) {
     predict(fit, newdata=x, type="response", ...)
   })

@@ -1,4 +1,5 @@
 #' @importFrom glmnetUtils cv.glmnet
+#' @importFrom stats as.formula
 #' @export
 select_variables <-
 function(data, response, family="binomial", ...){
