@@ -15,6 +15,7 @@ performance <- function(model, data, outcome, ...){
 #' 
 #' @param metrics A character vector indicating the metrics to be computed
 #' @param outcome The name of the outcome measure. This should be the name of a variable in `data`.
+#' @param model_fits A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).
 #'
 #' @return
 #' @rdname performance
@@ -24,7 +25,7 @@ performance <- function(model, data, outcome, ...){
 #' @importFrom fmsb NagelkerkeR2
 #' @export
 #' @include internals.R
-performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2"), ...){
+performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2"), model_fits, ...){
   metrics <- match.arg(metrics, several.ok = TRUE)
   data <- data_long(data)
   
@@ -49,12 +50,16 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     perf[["auc"]] <- auc_ci
   }
   if("brier" %in% metrics) {
-    perf[["brier"]] <- by(data, data$.imp,
-                     function(x) mean((x[[outcome]] - x$prediction)^2))
+    perf[["brier"]] <- unlist(as.list(by(data, data$.imp,
+                     function(x) mean((x[[outcome]] - x$prediction)^2))))
     
   }
-  if("r2" %in% perf){
-    perf[["r2"]] <- sapply(model$fit, NagelkerkeR2)[2,]
+  if("r2" %in% metrics){
+    if(!missing(model_fits)) {
+      perf[["r2"]] <- unlist(sapply(model_fits, NagelkerkeR2)[2,])
+    } else{
+      warning("Argument 'model_fits' is missing, skipping computation of Nagelkerke's R2.")
+    }
   }
   perf
 }

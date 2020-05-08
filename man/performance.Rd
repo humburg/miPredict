@@ -12,6 +12,7 @@ performance(model, data, outcome, ...)
   data,
   outcome,
   metrics = c("roc", "auc", "brier", "r2"),
+  model_fits,
   ...
 )
 }
@@ -25,6 +26,8 @@ performance(model, data, outcome, ...)
 \item{...}{Further arguments to be passed to specific methods}
 
 \item{metrics}{A character vector indicating the metrics to be computed}
+
+\item{model_fits}{A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).}
 }
 \value{
 A list of performance metrics.
