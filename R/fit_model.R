@@ -41,6 +41,6 @@ function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se")) {
   cand_models <- candidate_models(fit, s=s, response = outcome)
   model <- select_model(cand_models, data)
   pooled_model <- pool_model(model, data)
-  class(pooled_model) <- c(select_model$fit$family$family, class(pooled_model))
+  class(pooled_model) <- c(pooled_model$family$family, class(pooled_model))
   list(selected_model=model, pooled_model=pooled_model)
 }
