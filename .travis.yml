@@ -11,5 +11,6 @@ apt-packages:
   - libgit2-dev
 r_packages:
   - covr
+cache: packages
 after_success:
   - Rscript -e 'covr::codecov()'
