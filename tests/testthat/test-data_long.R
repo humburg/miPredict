@@ -1,11 +1,5 @@
 context("data in long format")
 
-library(mice)
-data(nhanes)
-nhanes_mids <- mice(nhanes2, m=5, printFlag=FALSE) 
-nhanes_long <- complete(nhanes_mids, action="long")
-nhanes_clean <- nhanes_long %>% clean_data()
-
 test_that("long data is unchanged", {
   expect_equal(data_long(nhanes_long), nhanes_long)
 })
