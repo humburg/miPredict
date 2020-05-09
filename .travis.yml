@@ -10,3 +10,7 @@ apt-packages:
   - libxml2-dev
   - libssl-dev
   - libgit2-dev
+r_packages:
+  - covr
+after_success:
+  - Rscript -e 'covr::codecov()'
