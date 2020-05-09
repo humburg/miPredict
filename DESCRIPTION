@@ -33,3 +33,5 @@ Collate:
     'scale_data.R'
     'select_model.R'
     'select_variables.R'
+Suggests: 
+    testthat (>= 2.1.0)
