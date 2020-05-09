@@ -20,6 +20,7 @@ RoxygenNote: 7.1.0
 Collate: 
     'boot_model.R'
     'candidate_models.R'
+    'clean_data.R'
     'fit_model.R'
     'internals.R'
     'makeglm.r'
