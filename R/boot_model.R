@@ -12,7 +12,7 @@ boot_model <- function(imputed, outcome, seed, family="binomial", iter=1000, s="
     if(do_impute) {
       sample_idx <- sample(1:nrow(imputed$data), replace=TRUE)
       imp <- mice(data=imputed$data[sample_idx, ], m=imputed$m, method=imputed$method, printFlag=FALSE, ...)
-      data_comp <- mice::complete(imp, action="long") %>% clean_data()
+      data_comp <- complete(imp, action="long") %>% clean_data()
     } else {
       sample_idx <- unlist(lapply(sample(unique(imputed_complete$.id), replace=TRUE), function(id) which(imputed_complete$.id == id)))
       data_comp <- imputed_complete[sample_idx, ]
