@@ -30,6 +30,9 @@ for the optimal \eqn{\lambda} determined by cross-validation or \code{lambda.1se
 
 \item{do_impute}{Logical indicating whether imputation of missing values should be performed as part of the bootstrap procedure.}
 }
+\value{
+A list with the results of calls to \link{fit_model} and \link{performance} for each bootstrap sample.
+}
 \description{
 Bootstrap model fit and predictions
 }
@@ -38,4 +41,7 @@ When \code{do_impute} is \code{TRUE} (the default), observations are sampled fro
 These data as well as all parameters for the imputation of bootstrapped data are taken from \code{imputed} argument. When
 \code{do_impute} is \code{FALSE} no new imputation takes place. Instead, resampling of the individuals in the original dataset
 takes place in such a way that the observations from all imputed datasets are included for a selected individual.
+}
+\author{
+Peter Humburg
 }

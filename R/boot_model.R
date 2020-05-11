@@ -15,6 +15,7 @@
 #' `do_impute` is `FALSE` no new imputation takes place. Instead, resampling of the individuals in the original dataset
 #' takes place in such a way that the observations from all imputed datasets are included for a selected individual.
 #'
+#' @return A list with the results of calls to [fit_model] and [performance] for each bootstrap sample.
 #' @author Peter Humburg
 #' @import mice
 #' @importFrom pROC auc
