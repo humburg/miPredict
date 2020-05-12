@@ -1,3 +1,11 @@
+#' Pool AUC estimates from multiply imputed data using Rubin's rules
+#'
+#' @param roc An object of class [roc]
+#' @param n Sample size
+#'
+#' @return A list with elements *estimate* and *ci* providing the pooled AUC
+#' and its 95% confidence interval respectively.
+#' @author Peter Humburg
 #' @importFrom pROC auc
 #' @importFrom pROC var
 #' @export
