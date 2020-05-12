@@ -28,7 +28,7 @@ boot_model <- function(imputed, outcome, seed=Sys.time(), family="binomial", ite
   set.seed(seed)
   imputed_complete <- complete(imputed, action="long") %>% clean_data()
   for(i in 1:iter){
-    if(i %% round(iter/10) == 0) message(format(Sys.time(), format="%H:%M:%S"), " - Iteration ", i, "/", iter)
+    if(i %% max(round(iter/10), 1) == 0) message(format(Sys.time(), format="%H:%M:%S"), " - Iteration ", i, "/", iter)
     if(do_impute) {
       sample_idx <- sample(1:nrow(imputed$data), replace=TRUE)
       imp <- mice(data=imputed$data[sample_idx, ], m=imputed$m, method=imputed$method, printFlag=FALSE)
