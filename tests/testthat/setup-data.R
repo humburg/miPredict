@@ -16,4 +16,4 @@ for(i in 1:ncol(x)){
 }
 binomData <- as.data.frame(c(as.data.frame(x), data.frame(y=y)))
 binom_mids <- mice(binomData, m=5, printFlag=FALSE) 
-binom_fit <- fit_model(binom_mids, outcome="y")
+suppressWarnings(binom_fit <- fit_model(binom_mids, outcome="y"))

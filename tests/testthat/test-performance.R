@@ -1,9 +1,10 @@
 context("model performance")
 
-perf1 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "roc")
-perf2 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc"))
-perf3 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier"))
-perf4 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier", "r2"), binom_fit$selected_model$fit)
+suppressWarnings(perf1 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "roc"))
+suppressWarnings(perf2 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc")))
+suppressWarnings(perf2a <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "auc"))
+suppressWarnings(perf3 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier")))
+suppressWarnings(perf4 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier", "r2"), binom_fit$selected_model$fit))
 
 test_that("output has expected structure", {
   expect_equal(length(perf1), 1)
@@ -13,7 +14,10 @@ test_that("output has expected structure", {
   expect_equal(length(perf2), 2)
   expect_equal(names(perf2), c("roc", "auc"))
   expect_equal(class(perf2$auc[[1]]), "numeric")
-  expect_equal(dim(perf2$auc), c(binom_mids$m, 3))
+  expect_equal(length(perf2a), 1)
+  expect_equal(names(perf2a), "auc")
+  expect_equal(class(perf2a$auc[[1]]), "numeric")
+  expect_equal(dim(perf2a$auc), c(binom_mids$m, 3))
   expect_equal(length(perf3), 3)
   expect_equal(names(perf3), c("roc", "auc", "brier"))
   expect_equal(class(perf3$brier[[1]]), "numeric")
