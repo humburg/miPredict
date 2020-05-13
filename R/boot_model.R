@@ -23,10 +23,11 @@
 #' @importFrom pROC roc
 #' @export
 boot_model <- function(imputed, outcome, seed=Sys.time(), family="binomial", iter=1000, s=c("lambda.min", "lambda.1se"), do_impute=TRUE){
+  stopifnot(is(imputed, "mids"))
   s <- match.arg(s)
   ans <- vector(mode="list", length=iter)
   set.seed(seed)
-  imputed_complete <- complete(imputed, action="long") %>% clean_data()
+  imputed_complete <- data_long(imputed)
   for(i in 1:iter){
     if(i %% max(round(iter/10), 1) == 0) message(format(Sys.time(), format="%H:%M:%S"), " - Iteration ", i, "/", iter)
     if(do_impute) {
@@ -38,7 +39,7 @@ boot_model <- function(imputed, outcome, seed=Sys.time(), family="binomial", ite
       data_comp <- imputed_complete[sample_idx, ]
     }
     model <- fit_model(data_comp, outcome, family = family, s=s)
-    perf <- performance(model$pooled_model, data_comp, outcome)
+    perf <- performance(model$pooled_model, data_comp, outcome, model_fits=model$selected_model$fit)
     ans[[i]] <- c(model, list(data=sample_idx), perf)
   }
   ans

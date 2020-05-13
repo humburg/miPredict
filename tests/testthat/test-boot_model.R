@@ -12,6 +12,10 @@ test_that("output has expected structure", {
   expect_true(all(sapply(boot_result, function(x) "selected_model" %in% names(x))))
   expect_true(all(sapply(boot_result, function(x) "pooled_model" %in% names(x))))
   expect_true(all(sapply(boot_result, function(x) "data" %in% names(x))))
+  expect_true(all(sapply(boot_result, function(x) "roc" %in% names(x))))
+  expect_true(all(sapply(boot_result, function(x) "auc" %in% names(x))))
+  expect_true(all(sapply(boot_result, function(x) "brier" %in% names(x))))
+  expect_type(boot_result[[1]]$r2, "double")
 })
 
 test_that("multiple imputation can be skipped",{
@@ -20,4 +24,8 @@ test_that("multiple imputation can be skipped",{
   expect_true(all(sapply(boot_nomi, function(x) "selected_model" %in% names(x))))
   expect_true(all(sapply(boot_nomi, function(x) "pooled_model" %in% names(x))))
   expect_true(all(sapply(boot_nomi, function(x) "data" %in% names(x))))
+})
+
+test_that("data.frame is rejected as input", {
+  expect_error(boot_model(mice::complete(binom_mids, action="long"), "y", iter = 1), "mids")
 })
