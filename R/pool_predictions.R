@@ -1,3 +1,9 @@
+#' Pool predictions
+#' 
+#' @param pred A matrix of predicted outcomes. One column per imputed dataset.
+#' 
+#' @return A vector of pooled predictions.
+#' @author Peter Humburg
 #' @export
 pool_predictions <-
 function(pred) {
