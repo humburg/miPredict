@@ -3,7 +3,7 @@ context("predictions")
 predictions <- predict_outcome(binom_fit$pooled_model, binom_mids)
 
 test_that("output has expected structure", {
-  expect_equal(class(predictions), "matrix")
+  expect_equal(class(predictions)[1], "matrix")
   expect_equal(dim(predictions), c(nrow(binomData), binom_mids$m))
 })
 
