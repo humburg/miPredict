@@ -31,8 +31,6 @@ performance(model, data, outcome, ...)
 }
 \value{
 A list of performance metrics.
-
-
 }
 \description{
 Performance metrics for predictive models
