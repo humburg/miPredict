@@ -17,15 +17,15 @@ performance <- function(model, data, outcome, ...){
 #' @param outcome The name of the outcome measure. This should be the name of a variable in `data`.
 #' @param model_fits A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).
 #'
-#' @return
 #' @rdname performance
 #' @method performance binomial
 #' @importFrom pROC roc
 #' @importFrom pROC ci
 #' @importFrom fmsb NagelkerkeR2
+#' @importFrom generalhoslem logitgof
 #' @export
 #' @include internals.R
-performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2"), model_fits, ...){
+performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2", "hoslem"), model_fits, ...){
   metrics <- match.arg(metrics, several.ok = TRUE)
   data <- data_long(data)
   
@@ -60,6 +60,9 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     } else{
       warning("Argument 'model_fits' is missing, skipping computation of Nagelkerke's R2.")
     }
+  }
+  if("hoslem" %in% metrics){
+    perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) logitgof(x[[outcome]], predict(model, newdata = x, type="response"))))
   }
   perf
 }
