@@ -33,3 +33,7 @@ test_that("output has expected structure", {
 test_that("missing arguments are handled", {
   expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier", "r2")), "model_fits")
 })
+
+test_that("performance metrics fail gracefully", {
+  expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", "hoslem"), "Test failed")
+})

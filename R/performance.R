@@ -62,7 +62,19 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     }
   }
   if("hoslem" %in% metrics){
-    perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) logitgof(x[[outcome]], predict(model, newdata = x, type="response"))))
+    perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) {
+      tryCatch({
+        fitted_vals <- predict(model, newdata = x, type="response")
+        ceiling(g_max <- sum(apply(table(round(fitted_vals, 8), x[[outcome]]), 1, function(i) all(i >0)))/2)
+        logitgof(x[[outcome]], fitted_vals, g=min(10, g_max))},
+        error=function(e){
+          warning("Hosmer-Lemeshow Test failed with error message '", e, "'")
+          ans <- list(statistic=c("X-squared"=NA), parameter=c(df=NA), p.value=NA, method="Hosmer and Lemeshow test", data.name=NA, observed=NA, expected=NA, stddiffs=NA)
+          class(ans) <- "htest"
+          ans
+        }
+      )}))
+    attr(perf[["hoslem"]], "call") <- NULL
   }
   perf
 }
