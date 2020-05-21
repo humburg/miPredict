@@ -1,7 +1,7 @@
 context("pooled AUC estimates")
 
 suppressWarnings(perf <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "roc"))
-suppressWarnings(auc <- pool_auc(perf[["roc"]], nrow(binomData)))
+suppressWarnings(auc <- pool_auc(perf[["roc"]]))
 
 test_that("output has expected structure", {
   expect_equal(class(auc), "list")

@@ -4,12 +4,10 @@
 \alias{pool_auc}
 \title{Pool AUC estimates from multiply imputed data using Rubin's rules}
 \usage{
-pool_auc(roc, n)
+pool_auc(roc)
 }
 \arguments{
-\item{roc}{An object of class \link{roc}}
-
-\item{n}{Sample size}
+\item{roc}{A list of objects of class \link{roc}}
 }
 \value{
 A list with elements \emph{estimate} and \emph{ci} providing the pooled AUC
