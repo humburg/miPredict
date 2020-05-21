@@ -27,11 +27,14 @@ performance <- function(model, data, outcome, ...){
 #' @include internals.R
 performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2", "hoslem"), model_fits, ...){
   metrics <- match.arg(metrics, several.ok = TRUE)
+  dots <- list(...)
   data <- data_long(data)
   
   predictions <- predict_outcome(model, data)
-  pooled_predictions <- pool_predictions(predictions)
-  data$prediction <- pooled_predictions
+  #pooled_predictions <- pool_predictions(predictions)
+  #data$prediction <- pooled_predictions
+  attr(predictions, 'dim') <- NULL
+  data$prediction <- predictions
   
   perf <- vector(length=length(metrics), mode="list")
   names(perf) <- metrics
@@ -63,10 +66,10 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
   }
   if("hoslem" %in% metrics){
     perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) {
-      tryCatch({
-        fitted_vals <- predict(model, newdata = x, type="response")
-        ceiling(g_max <- sum(apply(table(round(fitted_vals, 8), x[[outcome]]), 1, function(i) all(i >0)))/2)
-        logitgof(x[[outcome]], fitted_vals, g=min(10, g_max))},
+      if(length(dots)) hoslem_args <- dots[names(dots) %in% names(formals(logitgof))]
+      else hoslem_args <- list()
+      tryCatch(
+        do.call(logitgof, c(list(obs=x[[outcome]], exp=x[["prediction"]]), hoslem_args)),
         error=function(e){
           warning("Hosmer-Lemeshow Test failed with error message '", e, "'")
           ans <- list(statistic=c("X-squared"=NA), parameter=c(df=NA), p.value=NA, method="Hosmer and Lemeshow test", data.name=NA, observed=NA, expected=NA, stddiffs=NA)

@@ -35,5 +35,9 @@ test_that("missing arguments are handled", {
 })
 
 test_that("performance metrics fail gracefully", {
-  expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", "hoslem"), "Test failed")
+  expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", "hoslem", g=0), "Test failed")
+})
+
+test_that("arguments are passed on", {
+  expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", "hoslem", g=5), "compute 5 rows")
 })
