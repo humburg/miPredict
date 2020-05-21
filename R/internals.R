@@ -8,3 +8,17 @@ data_long <- function(data) {
   }
   data
 }
+
+#' @importFrom stringr str_starts
+which_scale <- function(data) {
+  to_scale <- sapply(data, function(x) if(length(unique(x)) > 2 && !is.factor(x)) TRUE else FALSE)
+  which(to_scale & !str_starts(names(data), fixed(".")))
+}
+
+#' @importFrom stats sd
+needs_scaling <- function(data) {
+  to_scale <- which_scale(data)
+  means <- sapply(data[, to_scale], mean)
+  sds <- sapply(data[, to_scale], sd)
+  any(abs(means) > 0.5) || any(abs(sds - 1) > 0.5)
+}

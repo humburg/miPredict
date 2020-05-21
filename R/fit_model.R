@@ -25,6 +25,7 @@
 #' @param family The [family] object to be used. May a family object or the name of the family to be used.
 #' @param s A character string indicating which value of \eqn{\lambda} should be used. Either `lambda.min`
 #' for the optimal \eqn{\lambda} determined by cross-validation or `lambda.1se` for the optimal \eqn{\lambda + 1} standard error.
+#' @param scale Logical indicating whether input data should be scaled.
 #' 
 #' @return A list with components
 #' * *selected_model*: A list with components *formula* and *fit* containing the [formula] for the selected
@@ -34,9 +35,15 @@
 #' @author Peter Humburg
 #' @export
 fit_model <-
-function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se")) {
+function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scale=FALSE) {
   s <- match.arg(s)
   data <- data_long(data)
+  if(scale) {
+    data <- data %>% scale_data()
+  } else if(needs_scaling(data)){
+    ## warn if data appears to be unscaled
+    warning("Data may require scaling. Consider re-running with `scale = TRUE`.")
+  }
   fit <- select_variables(data, outcome, family)
   cand_models <- candidate_models(fit, s=s, response = outcome)
   model <- select_model(cand_models, data)

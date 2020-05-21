@@ -8,7 +8,8 @@ fit_model(
   data,
   outcome,
   family = "binomial",
-  s = c("lambda.min", "lambda.1se")
+  s = c("lambda.min", "lambda.1se"),
+  scale = FALSE
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ fit_model(
 
 \item{s}{A character string indicating which value of \eqn{\lambda} should be used. Either \code{lambda.min}
 for the optimal \eqn{\lambda} determined by cross-validation or \code{lambda.1se} for the optimal \eqn{\lambda + 1} standard error.}
+
+\item{scale}{Logical indicating whether input data should be scaled.}
 }
 \value{
 A list with components
