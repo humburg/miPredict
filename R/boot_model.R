@@ -8,6 +8,7 @@
 #' @param s A character string indicating which value of \eqn{\lambda} should be used. Either `lambda.min`
 #' for the optimal \eqn{\lambda} determined by cross-validation or `lambda.1se` for the optimal \eqn{\lambda + 1} standard error.
 #' @param do_impute Logical indicating whether imputation of missing values should be performed as part of the bootstrap procedure.
+#' @param ... Further arguments passed to [performance].
 #'
 #' @details
 #' When `do_impute` is `TRUE` (the default), observations are sampled from the original dataset, including missing values.
@@ -21,26 +22,41 @@
 #' @importFrom pROC auc
 #' @importFrom pROC ci
 #' @importFrom pROC roc
+#' @importFrom dplyr group_by
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr sample_frac
+#' @importFrom dplyr mutate
+#' @importFrom rlang .data
+#' @importFrom rlang !!
+#' @importFrom rlang :=
 #' @export
-boot_model <- function(imputed, outcome, seed=Sys.time(), family="binomial", iter=1000, s=c("lambda.min", "lambda.1se"), do_impute=TRUE){
+boot_model <- function(imputed, outcome, seed=Sys.time(), family="binomial", iter=1000, s=c("lambda.min", "lambda.1se"), do_impute=TRUE, ...){
   stopifnot(is(imputed, "mids"))
   s <- match.arg(s)
   ans <- vector(mode="list", length=iter)
   set.seed(seed)
   imputed_complete <- data_long(imputed)
+  if(explicit_na <- is.factor(imputed$data[[outcome]])){
+    imputed$data <- imputed$data %>% mutate(!!outcome := forcats::fct_explicit_na(.data[[outcome]]))
+  }
   for(i in 1:iter){
     if(i %% max(round(iter/10), 1) == 0) message(format(Sys.time(), format="%H:%M:%S"), " - Iteration ", i, "/", iter)
     if(do_impute) {
-      sample_idx <- sample(1:nrow(imputed$data), replace=TRUE)
-      imp <- mice(data=imputed$data[sample_idx, ], m=imputed$m, method=imputed$method, printFlag=FALSE)
-      data_comp <- complete(imp, action="long") %>% clean_data()
+      boot_sample <- imputed$data %>% group_by(.data[[outcome]]) %>% sample_frac(replace=TRUE) %>% ungroup()
+      if(explicit_na){
+        boot_sample <- boot_sample %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)'))
+      }
+      imp <- mice(data=boot_sample, m=imputed$m, method=imputed$method, printFlag=FALSE)
+      data_comp <- data_long(imp)
     } else {
-      sample_idx <- unlist(lapply(sample(unique(imputed_complete$.id), replace=TRUE), function(id) which(imputed_complete$.id == id)))
-      data_comp <- imputed_complete[sample_idx, ]
+      sample_id <- imputed_complete %>% filter(.data$.imp==1) %>% select(.data$.id, .data[[outcome]]) %>% group_by(.data[[outcome]]) %>% sample_frac(replace=TRUE)
+      data_comp <- imputed_complete %>% filter(.data$.id %in% sample_id$.id)
     }
     model <- fit_model(data_comp, outcome, family = family, s=s)
-    perf <- performance(model$pooled_model, data_comp, outcome, model_fits=model$selected_model$fit)
-    ans[[i]] <- c(model, list(data=sample_idx), perf)
+    perf <- performance(model$pooled_model, data_comp, outcome, model_fits=model$selected_model$fit, ...)
+    ans[[i]] <- c(model, perf)
   }
   ans
 }

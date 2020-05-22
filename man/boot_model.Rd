@@ -11,7 +11,8 @@ boot_model(
   family = "binomial",
   iter = 1000,
   s = c("lambda.min", "lambda.1se"),
-  do_impute = TRUE
+  do_impute = TRUE,
+  ...
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ boot_model(
 for the optimal \eqn{\lambda} determined by cross-validation or \code{lambda.1se} for the optimal \eqn{\lambda + 1} standard error.}
 
 \item{do_impute}{Logical indicating whether imputation of missing values should be performed as part of the bootstrap procedure.}
+
+\item{...}{Further arguments passed to \link{performance}.}
 }
 \value{
 A list with the results of calls to \link{fit_model} and \link{performance} for each bootstrap sample.

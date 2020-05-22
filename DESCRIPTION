@@ -1,8 +1,8 @@
 Package: miPredict
 Type: Package
 Title: Predictive models from multiply imputed data
-Version: 0.1.12
-Date: 2020-05-21
+Version: 0.1.13
+Date: 2020-05-22
 Authors@R: person("Peter", "Humburg", email = "p.humburg@unsw.edu.au",
                   role = c("aut", "cre"))
 Maintainer: Peter Humburg <p.humburg@unsw.edu.au>
@@ -11,7 +11,7 @@ Description: Variable selection and model fitting for predictive
     The focus is on logistic regression models with some support
     for other GLMs.
 Depends: R (>= 3.6.0)
-Imports: mice, glmnet, glmnetUtils, dplyr, ggplot2, fmsb, pROC, stringr, tidyr, methods, rlang, generalhoslem
+Imports: mice, glmnet, glmnetUtils, dplyr, ggplot2, fmsb, pROC, stringr, tidyr, methods, rlang, generalhoslem, forcats
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
