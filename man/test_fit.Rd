@@ -7,7 +7,8 @@
 test_fit(
   model,
   data,
-  which = c("auc", "thresholds", "sp", "se", "coords"),
+  outcome,
+  which = c("auc", "specificity", "sensitivity", "accuracy", "precision"),
   bootstrap = FALSE,
   iter = 2000,
   level = 0.95
@@ -18,7 +19,9 @@ test_fit(
 
 \item{data}{Data to use in performance assessment.}
 
-\item{which}{Character vector indicating which performance measures should be computed. One or more of \emph{auc}, \emph{thresholds}, \emph{sp}, \emph{se}, \emph{coords}.}
+\item{outcome}{Name of outcome in \code{data}.}
+
+\item{which}{Character vector indicating which performance measures should be computed. One or more of \emph{auc}, \emph{specificity}, \emph{sensitivity}, \emph{accuracy}, \emph{precision}.}
 
 \item{bootstrap}{Logical indicating whether bootstrap samples should be generated from \code{data}.}
 
@@ -30,11 +33,12 @@ test_fit(
 A list of performance measures of the same length as \code{which}.
 }
 \description{
-Assessing model performance
+Compute model performance metrics.
 }
 \details{
-Confidence intervals may be calculated for the AUC (with \code{which="auc"}), thresholds derived from the ROC curve of the \code{model} on the provided \code{data} (\code{which="thresholds"}),
-specificity (\code{which="sp"}), sensitivity (\code{which="se"}), and the ROC curve (\code{which="coords"}).
+Confidence intervals may be calculated for a range of performance metrics, including the AUC, specificity, sensitivity, accuracy, and precision. Of these all except AUC
+depend on the choice of classification cut-off used. The metrics reported by this function are at the cut-off which maximises the sum of sensitivity and specificity,
+i.e. the Youden Index.
 }
 \author{
 Peter Humburg
