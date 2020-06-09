@@ -10,6 +10,7 @@ nhanes_clean <- nhanes_long %>% clean_data()
 ## Model fit
 library(glmnet)
 data(BinomialExample)
+binomData_complete <- as.data.frame(c(as.data.frame(x), data.frame(y=y)))
 for(i in 1:ncol(x)){
   idx <- sample(1:100, size=10)
   x[idx, i] <- NA
