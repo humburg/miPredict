@@ -16,6 +16,6 @@
 #' @author Peter Humburg
 #'
 #' @examples
-test_fit <- function(model, data, which=c("auc", "thresholds", "sp", "se", "coords"), bootstrap=FALSE, iter=2000, level=0.95){
+test_fit <- function(model, data, which=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
   
 }

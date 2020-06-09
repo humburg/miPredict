@@ -1,7 +1,7 @@
 context("bootstrap performance estimates")
 
+metrics <- c("auc", "specificity", "sensitivity", "accuracy", "precision")
 test_that("output contains requested measures", {
-  metrics <- c("auc", "thresholds", "sp", "se", "coords")
   expect_length(perf <- test_fit(binom_fit$pooled_model, binomData_complete), length(metrics))
   expect_named(perf, metrics)
   expect_length(perf2 <- test_fit(binom_fit$pooled_model, binomData_complete, which=metrics[1:2]), 2)
@@ -11,7 +11,6 @@ test_that("output contains requested measures", {
 })
 
 test_that("imputed data is accepted as input", {
-  metrics <- c("auc", "thresholds", "sp", "se", "coords")
   expect_length(perf <- test_fit(binom_fit$pooled_model, binomData), length(metrics))
   expect_named(perf, metrics)
   expect_length(perf2 <- test_fit(binom_fit$pooled_model, binomData, which=metrics[1:2]), 2)
