@@ -21,12 +21,13 @@
 #' 
 #' @return A list of performance measures of the same length as `metrics`.
 #' @export
+#' @importFrom dplyr select
 #' @author Peter Humburg
 #'
 class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
   metrics <- match.arg(metrics, several.ok = TRUE)
   if(is(data, "mids")) {
-    data <- mice::complete(data)
+    data <- data_long(data) %>% select(-.id, -.imp)
   }
   roc <- pROC::roc(data[[outcome]], predict(model, data))
   ans <- vector(mode="list", length(metrics))
