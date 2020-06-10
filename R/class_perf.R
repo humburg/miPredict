@@ -1,6 +1,6 @@
-#' Assessing model performance
+#' Assessing model predictive performance
 #' 
-#' Compute model performance metrics.
+#' Compute performance metrics for logistic regression models.
 #'
 #' @param model An object of class [glm].
 #' @param data Data to use in performance assessment. Either a data frame or an object of class [mids] (see Details).
@@ -23,7 +23,7 @@
 #' @export
 #' @author Peter Humburg
 #'
-test_fit <- function(model, data, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
+class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
   metrics <- match.arg(metrics, several.ok = TRUE)
   if(is(data, "mids")) {
     data <- mice::complete(data)
