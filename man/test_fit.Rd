@@ -8,7 +8,7 @@ test_fit(
   model,
   data,
   outcome,
-  which = c("auc", "specificity", "sensitivity", "accuracy", "precision"),
+  metrics = c("auc", "specificity", "sensitivity", "accuracy", "precision"),
   bootstrap = FALSE,
   iter = 2000,
   level = 0.95
@@ -17,11 +17,11 @@ test_fit(
 \arguments{
 \item{model}{An object of class \link{glm}.}
 
-\item{data}{Data to use in performance assessment.}
+\item{data}{Data to use in performance assessment. Either a data frame or an object of class \link{mids} (see Details).}
 
 \item{outcome}{Name of outcome in \code{data}.}
 
-\item{which}{Character vector indicating which performance measures should be computed. One or more of \emph{auc}, \emph{specificity}, \emph{sensitivity}, \emph{accuracy}, \emph{precision}.}
+\item{metrics}{Character vector indicating which performance measures should be computed. One or more of \emph{auc}, \emph{specificity}, \emph{sensitivity}, \emph{accuracy}, \emph{precision}.}
 
 \item{bootstrap}{Logical indicating whether bootstrap samples should be generated from \code{data}.}
 
@@ -30,16 +30,21 @@ test_fit(
 \item{level}{Width of the confidence interval.}
 }
 \value{
-A list of performance measures of the same length as \code{which}.
+A list of performance measures of the same length as \code{metrics}.
 }
 \description{
 Compute model performance metrics.
 }
-\details{
+\section{Available performance metrics:}{
 Confidence intervals may be calculated for a range of performance metrics, including the AUC, specificity, sensitivity, accuracy, and precision. Of these all except AUC
 depend on the choice of classification cut-off used. The metrics reported by this function are at the cut-off which maximises the sum of sensitivity and specificity,
 i.e. the Youden Index.
 }
+
+\section{Using multiply imputed data:}{
+If \code{data} is of class \link{mids} the imputed datasets will be collapsed into a single dataset before performance metrics are computed.
+}
+
 \author{
 Peter Humburg
 }
