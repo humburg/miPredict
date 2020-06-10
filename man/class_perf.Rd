@@ -17,7 +17,7 @@ class_perf(
 \arguments{
 \item{model}{An object of class \link{glm}.}
 
-\item{data}{Data to use in performance assessment. Either a data frame or an object of class \link{mids} (see Details).}
+\item{data}{A data frame to use in performance assessment.}
 
 \item{outcome}{Name of outcome in \code{data}.}
 
@@ -42,9 +42,12 @@ i.e. the Youden Index.
 }
 
 \section{Using multiply imputed data:}{
-If \code{data} is of class \link{mids} the imputed datasets will be collapsed into a single dataset before performance metrics are computed.
+To compute performance metrics from multiply imputed data, use the \code{\link[=performance]{performance()}} function instead.
 }
 
+\seealso{
+\code{\link[=performance]{performance()}}
+}
 \author{
 Peter Humburg
 }
