@@ -20,6 +20,7 @@ RoxygenNote: 7.1.0
 Collate: 
     'boot_model.R'
     'candidate_models.R'
+    'class_perf.R'
     'clean_data.R'
     'fit_model.R'
     'internals.R'
@@ -33,6 +34,5 @@ Collate:
     'scale_data.R'
     'select_model.R'
     'select_variables.R'
-    'test_fit.R'
 Suggests: 
     testthat (>= 2.1.0)
