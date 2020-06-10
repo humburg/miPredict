@@ -3,7 +3,7 @@
 #' Compute performance metrics for logistic regression models.
 #'
 #' @param model An object of class [glm].
-#' @param data Data to use in performance assessment. Either a data frame or an object of class [mids] (see Details).
+#' @param data A data frame to use in performance assessment.
 #' @param outcome Name of outcome in `data`.
 #' @param metrics Character vector indicating which performance measures should be computed. One or more of *auc*, *specificity*, *sensitivity*, *accuracy*, *precision*.
 #' @param bootstrap Logical indicating whether bootstrap samples should be generated from `data`.
@@ -17,9 +17,10 @@
 #' i.e. the Youden Index.
 #' 
 #' # Using multiply imputed data:
-#' If `data` is of class [mids] the imputed datasets will be collapsed into a single dataset before performance metrics are computed.
+#' To compute performance metrics from multiply imputed data, use the [performance()] function instead.
 #' 
 #' @return A list of performance measures of the same length as `metrics`.
+#' @seealso [performance()]
 #' @export
 #' @importFrom dplyr select
 #' @author Peter Humburg
@@ -27,7 +28,7 @@
 class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
   metrics <- match.arg(metrics, several.ok = TRUE)
   if(is(data, "mids")) {
-    data <- data_long(data) %>% select(-.id, -.imp)
+    stop("Multiply imputed data is not supported directly by `class_perf()`. Use `performance()` instead.")
   }
   roc <- pROC::roc(data[[outcome]], predict(model, data))
   ans <- vector(mode="list", length(metrics))
