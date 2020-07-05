@@ -23,34 +23,50 @@ performance <- function(model, data, outcome, ...){
 #' @importFrom pROC ci
 #' @importFrom fmsb NagelkerkeR2
 #' @importFrom generalhoslem logitgof
+#' @importFrom purrr reduce
 #' @export
 #' @include internals.R
-performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2", "hoslem"), model_fits, ...){
+performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier", "r2", "hoslem"), model_fits, ...){
   metrics <- match.arg(metrics, several.ok = TRUE)
   dots <- list(...)
   data <- data_long(data)
+  sample_size <- max(data$.id)
   
   predictions <- predict_outcome(model, data)
-  #pooled_predictions <- pool_predictions(predictions)
-  #data$prediction <- pooled_predictions
   attr(predictions, 'dim') <- NULL
   data$prediction <- predictions
   
   perf <- vector(length=length(metrics), mode="list")
   names(perf) <- metrics
   
-  if("roc" %in% metrics || "auc" %in% metrics){
-    roc_data <- by(data, data$.imp, 
-                   function(x) roc(x[[outcome]], x$prediction, ci=TRUE, plot=FALSE, 
-                                   direction="<", levels=c("0", "1")))
+  ## compute standard performance metrics on each dataset and pool results
+  class_perf_metrics <- intersect(metrics, eval(formals(class_perf)$metrics))
+  if(length(class_perf_metrics)) {
+    class_perf_args <- list()
+    if(length(dots)){
+      class_perf_args <- dots[names(dots) %in% names(formals(class_perf))]
+    }
+    perf_raw <- by(data, data$.imp, 
+                   function(x) do.call(class_perf, c(list(model=model, data=x, outcome=outcome, 
+                                                          metrics=class_perf_metrics), class_perf_args)),
+                   simplify=FALSE)
+    perf_comb <- reduce(perf_raw, function(x, y){
+      mapply(rbind, x, y, SIMPLIFY=FALSE)
+    })
+    ci_level <- if("level" %in% names(class_perf_args)) class_perf_args$level else formals(class_perf)$level
+    se_factor <- qnorm(1-(1-ci_level)/2)
+    perf_var <- lapply(perf_comb, function(x) ((x[,3] - x[,2])/se_factor*sample_size)^2)
+    perf_est <- lapply(perf_comb, "[", , 2)
+    perf_pooled <- mapply(pool.scalar, perf_est, perf_var, MoreArgs=list(n=sample_size))
+    perf_pooled_ci <- apply(perf_pooled, 2, function(x) list(c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]])/sample_size), 
+                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]])/sample_size))))
+    perf[class_perf_metrics] <- perf_pooled_ci
   }
+  
   if("roc" %in% metrics) {
-    perf[["roc"]] <- roc_data
-  }
-  if("auc" %in% metrics) {
-    auc_ci <- t(sapply(roc_data, ci))
-    colnames(auc_ci) <- c("AUC", "CI.lower", "ci.upper")
-    perf[["auc"]] <- auc_ci
+    perf[["roc"]] <- by(data, data$.imp, 
+                        function(x) roc(x[[outcome]], x$prediction, ci=TRUE, plot=FALSE, 
+                                        direction="<", levels=c("0", "1")))
   }
   if("brier" %in% metrics) {
     perf[["brier"]] <- unlist(as.list(by(data, data$.imp,
@@ -84,5 +100,6 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
       )}))
     attr(perf[["hoslem"]], "call") <- NULL
   }
+  
   perf
 }

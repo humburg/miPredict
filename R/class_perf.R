@@ -30,7 +30,8 @@ class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "se
   if(is(data, "mids")) {
     stop("Multiply imputed data is not supported directly by `class_perf()`. Use `performance()` instead.")
   }
-  roc <- pROC::roc(data[[outcome]], predict(model, data))
+  roc <- pROC::roc(data[[outcome]], predict(model, data), 
+                   direction="<", levels=c("0", "1"))
   ans <- vector(mode="list", length(metrics))
   names(ans) <- metrics
   if("auc" %in% metrics) {
@@ -38,7 +39,7 @@ class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "se
     metrics <- metrics[-which(metrics == "auc")]
   }
   if(length(metrics) > 0) {
-    ans[metrics] <- ci(roc, "best", of="coords", ret=metrics, conf.level=level, boot.n=iter)[metrics]
+    ans[metrics] <- ci(roc, "best", of="coords", ret=metrics, conf.level=level, boot.n=iter, best.policy="random")[metrics]
   }
   ans
 }
