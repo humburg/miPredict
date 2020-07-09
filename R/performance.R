@@ -55,11 +55,11 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     })
     ci_level <- if("level" %in% names(class_perf_args)) class_perf_args$level else formals(class_perf)$level
     se_factor <- qnorm(1-(1-ci_level)/2)
-    perf_var <- lapply(perf_comb, function(x) ((x[,3] - x[,2])/se_factor*sample_size)^2)
+    perf_var <- lapply(perf_comb, function(x) ((x[,3] - x[,2])/se_factor)^2*sample_size)
     perf_est <- lapply(perf_comb, "[", , 2)
     perf_pooled <- mapply(pool.scalar, perf_est, perf_var, MoreArgs=list(n=sample_size))
-    perf_pooled_ci <- apply(perf_pooled, 2, function(x) list(c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]])/sample_size), 
-                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]])/sample_size))))
+    perf_pooled_ci <- apply(perf_pooled, 2, function(x) list(c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]])/sqrt(sample_size)), 
+                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]])/sqrt(sample_size)))))
     perf[class_perf_metrics] <- perf_pooled_ci
   }
   
