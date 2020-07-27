@@ -24,6 +24,8 @@ performance <- function(model, data, outcome, ...){
 #' @importFrom fmsb NagelkerkeR2
 #' @importFrom generalhoslem logitgof
 #' @importFrom purrr reduce
+#' @importFrom SpecsVerification BrierDecomp
+#' @importFrom stats qnorm
 #' @export
 #' @include internals.R
 performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier", "r2", "hoslem"), model_fits, ...){
@@ -55,12 +57,18 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     })
     ci_level <- if("level" %in% names(class_perf_args)) class_perf_args$level else formals(class_perf)$level
     se_factor <- qnorm(1-(1-ci_level)/2)
-    perf_var <- lapply(perf_comb, function(x) ((x[,3] - x[,2])/se_factor)^2*sample_size)
+    perf_size <- cbind(sensitivity=unlist(by(data, data$.imp, function(x) sum(x[[outcome]]))), 
+                   specificity=unlist(by(data, data$.imp, function(x) sum(!x[[outcome]]))),
+                   accuracy=sample_size)
+    perf_var <- lapply(perf_comb, function(x) perf_var(x[,2], sample_size))
     perf_est <- lapply(perf_comb, "[", , 2)
     perf_pooled <- mapply(pool.scalar, perf_est, perf_var, MoreArgs=list(n=sample_size))
-    perf_pooled_ci <- apply(perf_pooled, 2, function(x) list(c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]])/sqrt(sample_size)), 
-                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]])/sqrt(sample_size)))))
-    perf[class_perf_metrics] <- perf_pooled_ci
+    perf_pooled_ci <- apply(perf_pooled, 2, function(x) c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]]/sample_size)), 
+                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]]/sample_size))))
+    for(i in 1:length(class_perf_metrics)){
+      perf[[class_perf_metrics[i]]] <- perf_pooled_ci[,i]
+    }
+    
   }
   
   if("roc" %in% metrics) {
@@ -69,8 +77,9 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
                                         direction="<", levels=c("0", "1")))
   }
   if("brier" %in% metrics) {
-    perf[["brier"]] <- unlist(as.list(by(data, data$.imp,
-                     function(x) mean((x[[outcome]] - x$prediction)^2))))
+    brier <- as.list(by(data, data$.imp,
+                        function(x) BrierDecomp((x$prediction), x[[outcome]])))
+    perf[["brier"]] <- pool_brier(brier, sample_size)
     
   }
   if("r2" %in% metrics){
