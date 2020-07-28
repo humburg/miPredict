@@ -1,8 +1,5 @@
 context("Pooling Brier Score")
 
-d <- complete(binom_mids, action="long")
-pred <- by(d, d$.imp, function(x) predict(binom_fit$pooled_model, newdata = x, type = "response"))
-
 test_that("output has expected format", {
   brier <- lapply(pred, BrierDecomp, binomData$y)
   pooled <- pool_brier(brier, nrow(binomData))
