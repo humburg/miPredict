@@ -4,12 +4,15 @@
 \alias{pool_brier}
 \title{Pool (decomposed) Brier scores}
 \usage{
-pool_brier(x, n = Inf)
+pool_brier(x, n = Inf, addTotal = TRUE)
 }
 \arguments{
 \item{x}{List of decomposed Brier scores}
 
 \item{n}{Sample size}
+
+\item{addTotal}{Logical indicating whether the total Brier score should be computed (TRUE, the default)
+or whether only the components should be returned.}
 }
 \value{
 2*3 matrix with pooled estimates of Brier score components

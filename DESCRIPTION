@@ -30,6 +30,7 @@ Collate:
     'pool_brier.R'
     'pool_model.R'
     'pool_predictions.R'
+    'pool_r2.R'
     'pool_roc.R'
     'predict_outcome.R'
     'scale_data.R'

@@ -26,3 +26,12 @@ needs_scaling <- function(data) {
 perf_var <- function(p, n) {
   p*(1-p)/n
 }
+
+
+#' @importFrom stats formula
+#' @importFrom stats family
+boot_fit <- function(model, data) {
+  idx <- sample(1:nrow(data), nrow(data), replace=TRUE)
+  newdata <- data[idx,]
+  glm(formula(model), family=family(model), data=newdata)
+}
