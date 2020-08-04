@@ -84,7 +84,8 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
   }
   if("r2" %in% metrics){
     if(!missing(model_fits)) {
-      perf[["r2"]] <- unlist(sapply(model_fits, NagelkerkeR2)[2,])
+      perf[["r2"]] <- pool_r2(model, model_fits, data)
+      
     } else{
       warning("Argument 'model_fits' is missing, skipping computation of Nagelkerke's R2.")
     }

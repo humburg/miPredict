@@ -4,10 +4,12 @@
 \alias{pool_r2}
 \title{Obtain pooled estimates of Nagelkerke's R-squared}
 \usage{
-pool_r2(model, data, iter = 1000)
+pool_r2(pooled_model, model_fits, data, iter = 1000)
 }
 \arguments{
-\item{model}{List of model objects as returned by \link{fit_model}.}
+\item{pooled_model}{The pooled model returned by \link{fit_model}.}
+
+\item{model_fits}{List of model objects as returned by \link{fit_model}.}
 
 \item{data}{Imputed dataset}
 
