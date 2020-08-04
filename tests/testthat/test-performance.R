@@ -21,7 +21,7 @@ test_that("output has expected structure", {
   expect_named(suppressWarnings(perf4 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = c("roc", "auc", "brier", "r2"), 
                                                      binom_fit$selected_model$fit)), c("roc", "auc", "brier", "r2"))
   expect_equal(class(perf4$r2[[1]]), "numeric")
-  expect_equal(length(perf4$r2), binom_mids$m)
+  expect_equal(length(perf4$r2), 2)
   
   expect_named(suppressWarnings(perf5 <- performance(binom_fit$pooled_model, binom_mids, "y", 
                                                      metrics = c("roc", "auc", "brier", "hoslem"))), 
