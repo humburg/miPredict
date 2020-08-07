@@ -91,23 +91,17 @@ performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "
     }
   }
   if("hoslem" %in% metrics){
-    perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) {
-      if(length(dots)) hoslem_args <- dots[names(dots) %in% names(formals(logitgof))]
-      else hoslem_args <- list()
-      tryCatch({
-        d <- list(obs=x[[outcome]], exp=x[["prediction"]])
-        hoslem <- do.call(logitgof, c(d, hoslem_args))
-        ## clean up data record
-        hoslem$data.name <- paste0("data$", outcome, ", prediction")
-        hoslem
-        },
+    if(length(dots)) hoslem_args <- dots[names(dots) %in% names(formals(logitgof))]
+    else hoslem_args <- list()
+    args <- c(list(model, data, outcome), hoslem_args)
+    perf[["hoslem"]] <- 
+      tryCatch(do.call(pool_hoslem, args),
         error=function(e){
           warning("Hosmer-Lemeshow Test failed with error message '", e, "'")
           ans <- list(statistic=c("X-squared"=NA), parameter=c(df=NA), p.value=NA, method="Hosmer and Lemeshow test", data.name=NA, observed=NA, expected=NA, stddiffs=NA)
           class(ans) <- "htest"
           ans
-        }
-      )}))
+        })
     attr(perf[["hoslem"]], "call") <- NULL
   }
   

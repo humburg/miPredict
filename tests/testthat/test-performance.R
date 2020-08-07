@@ -26,8 +26,8 @@ test_that("output has expected structure", {
   expect_named(suppressWarnings(perf5 <- performance(binom_fit$pooled_model, binom_mids, "y", 
                                                      metrics = c("roc", "auc", "brier", "hoslem"))), 
                c("roc", "auc", "brier", "hoslem"))
-  expect_equal(class(perf5$hoslem[[1]]), "htest")
-  expect_equal(length(perf5$hoslem), binom_mids$m)
+  expect_type(perf5$hoslem, "double")
+  expect_length(perf5$hoslem, 2)
 })
 
 test_that("missing arguments are handled", {
