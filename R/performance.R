@@ -23,66 +23,87 @@ performance <- function(model, data, outcome, ...){
 #' @importFrom pROC ci
 #' @importFrom fmsb NagelkerkeR2
 #' @importFrom generalhoslem logitgof
+#' @importFrom purrr reduce
+#' @importFrom SpecsVerification BrierDecomp
+#' @importFrom stats qnorm
 #' @export
 #' @include internals.R
-performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "brier", "r2", "hoslem"), model_fits, ...){
+performance.binomial <- function(model, data, outcome, metrics=c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier", "r2", "hoslem"), model_fits, ...){
   metrics <- match.arg(metrics, several.ok = TRUE)
   dots <- list(...)
   data <- data_long(data)
+  sample_size <- max(data$.id)
   
   predictions <- predict_outcome(model, data)
-  #pooled_predictions <- pool_predictions(predictions)
-  #data$prediction <- pooled_predictions
   attr(predictions, 'dim') <- NULL
   data$prediction <- predictions
   
   perf <- vector(length=length(metrics), mode="list")
   names(perf) <- metrics
   
-  if("roc" %in% metrics || "auc" %in% metrics){
-    roc_data <- by(data, data$.imp, 
-                   function(x) roc(x[[outcome]], x$prediction, ci=TRUE, plot=FALSE, 
-                                   direction="<", levels=c("0", "1")))
+  ## compute standard performance metrics on each dataset and pool results
+  class_perf_metrics <- intersect(metrics, eval(formals(class_perf)$metrics))
+  if(length(class_perf_metrics)) {
+    class_perf_args <- list()
+    if(length(dots)){
+      class_perf_args <- dots[names(dots) %in% names(formals(class_perf))]
+    }
+    perf_raw <- by(data, data$.imp, 
+                   function(x) do.call(class_perf, c(list(model=model, data=x, outcome=outcome, 
+                                                          metrics=class_perf_metrics), class_perf_args)),
+                   simplify=FALSE)
+    perf_comb <- reduce(perf_raw, function(x, y){
+      mapply(rbind, x, y, SIMPLIFY=FALSE)
+    })
+    ci_level <- if("level" %in% names(class_perf_args)) class_perf_args$level else formals(class_perf)$level
+    se_factor <- qnorm(1-(1-ci_level)/2)
+    perf_size <- cbind(sensitivity=unlist(by(data, data$.imp, function(x) sum(x[[outcome]]))), 
+                   specificity=unlist(by(data, data$.imp, function(x) sum(!x[[outcome]]))),
+                   accuracy=sample_size)
+    perf_var <- lapply(perf_comb, function(x) perf_var(x[,2], sample_size))
+    perf_est <- lapply(perf_comb, "[", , 2)
+    perf_pooled <- mapply(pool.scalar, perf_est, perf_var, MoreArgs=list(n=sample_size))
+    perf_pooled_ci <- apply(perf_pooled, 2, function(x) c(estimate=x[["qbar"]], ci.lower=max(0, x[["qbar"]] - se_factor*sqrt(x[["t"]]/sample_size)), 
+                          ci.upper=min(1, x[["qbar"]] + se_factor*sqrt(x[["t"]]/sample_size))))
+    for(i in 1:length(class_perf_metrics)){
+      perf[[class_perf_metrics[i]]] <- perf_pooled_ci[,i]
+    }
+    
   }
+  
   if("roc" %in% metrics) {
-    perf[["roc"]] <- roc_data
-  }
-  if("auc" %in% metrics) {
-    auc_ci <- t(sapply(roc_data, ci))
-    colnames(auc_ci) <- c("AUC", "CI.lower", "ci.upper")
-    perf[["auc"]] <- auc_ci
+    perf[["roc"]] <- by(data, data$.imp, 
+                        function(x) roc(x[[outcome]], x$prediction, ci=TRUE, plot=FALSE, 
+                                        direction="<", levels=c("0", "1")))
   }
   if("brier" %in% metrics) {
-    perf[["brier"]] <- unlist(as.list(by(data, data$.imp,
-                     function(x) mean((x[[outcome]] - x$prediction)^2))))
+    brier <- as.list(by(data, data$.imp,
+                        function(x) BrierDecomp((x$prediction), x[[outcome]])))
+    perf[["brier"]] <- pool_brier(brier, sample_size)
     
   }
   if("r2" %in% metrics){
     if(!missing(model_fits)) {
-      perf[["r2"]] <- unlist(sapply(model_fits, NagelkerkeR2)[2,])
+      perf[["r2"]] <- pool_r2(model, model_fits, data)
+      
     } else{
       warning("Argument 'model_fits' is missing, skipping computation of Nagelkerke's R2.")
     }
   }
   if("hoslem" %in% metrics){
-    perf[["hoslem"]] <- unclass(by(data, data$.imp, function(x) {
-      if(length(dots)) hoslem_args <- dots[names(dots) %in% names(formals(logitgof))]
-      else hoslem_args <- list()
-      tryCatch({
-        d <- list(obs=x[[outcome]], exp=x[["prediction"]])
-        hoslem <- do.call(logitgof, c(d, hoslem_args))
-        ## clean up data record
-        hoslem$data.name <- paste0("data$", outcome, ", prediction")
-        hoslem
-        },
+    if(length(dots)) hoslem_args <- dots[names(dots) %in% names(formals(logitgof))]
+    else hoslem_args <- list()
+    args <- c(list(model, data, outcome), hoslem_args)
+    perf[["hoslem"]] <- 
+      tryCatch(do.call(pool_hoslem, args),
         error=function(e){
           warning("Hosmer-Lemeshow Test failed with error message '", e, "'")
           ans <- list(statistic=c("X-squared"=NA), parameter=c(df=NA), p.value=NA, method="Hosmer and Lemeshow test", data.name=NA, observed=NA, expected=NA, stddiffs=NA)
           class(ans) <- "htest"
           ans
-        }
-      )}))
+        })
     attr(perf[["hoslem"]], "call") <- NULL
   }
+  
   perf
 }

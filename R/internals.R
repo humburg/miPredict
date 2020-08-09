@@ -22,3 +22,16 @@ needs_scaling <- function(data) {
   sds <- sapply(data[, to_scale], sd)
   any(abs(means) > 0.5) || any(abs(sds - 1) > 0.5)
 }
+
+perf_var <- function(p, n) {
+  p*(1-p)/n
+}
+
+
+#' @importFrom stats formula
+#' @importFrom stats family
+boot_fit <- function(model, data) {
+  idx <- sample(1:nrow(data), nrow(data), replace=TRUE)
+  newdata <- data[idx,]
+  glm(formula(model), family=family(model), data=newdata)
+}

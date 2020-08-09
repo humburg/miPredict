@@ -11,7 +11,8 @@ performance(model, data, outcome, ...)
   model,
   data,
   outcome,
-  metrics = c("roc", "auc", "brier", "r2", "hoslem"),
+  metrics = c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision",
+    "brier", "r2", "hoslem"),
   model_fits,
   ...
 )

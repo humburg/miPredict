@@ -4,13 +4,17 @@
 \alias{pool_auc}
 \title{Pool AUC estimates from multiply imputed data using Rubin's rules}
 \usage{
-pool_auc(roc)
+pool_auc(roc, n, conf_level = 0.95)
 }
 \arguments{
 \item{roc}{A list of objects of class \link{roc}}
+
+\item{n}{Sample size}
+
+\item{conf_level}{Size of confidence interval}
 }
 \value{
-A list with elements \emph{estimate} and \emph{ci} providing the pooled AUC
+A numeric vector with elements \emph{estimate}, \emph{ci.lower}, and \emph{ci.upper} providing the pooled AUC
 and its 95\% confidence interval respectively.
 }
 \description{
