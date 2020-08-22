@@ -23,3 +23,4 @@ Pool AUC estimates from multiply imputed data using Rubin's rules
 \author{
 Peter Humburg
 }
+\keyword{internal}

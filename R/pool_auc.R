@@ -10,7 +10,7 @@
 #' @importFrom pROC auc
 #' @importFrom pROC var
 #' @importFrom stats qnorm
-#' @internal
+#' @keywords internal
 #' @rdname deprecated
 pool_auc <-
 function(roc, n, conf_level=0.95) {

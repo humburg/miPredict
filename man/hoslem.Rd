@@ -7,7 +7,7 @@
 hoslem(data, outcome, prediction, ...)
 }
 \arguments{
-\item{data}{Multiply imputed dataset. Either an object of class \link{mids} or a data frame created with \code{\link[mice:complete]{mice::complete()}}.}
+\item{data}{Multiply imputed dataset. Either an object of class \link{mids} or a data frame created with \link[mice:complete.mids]{complete()}.}
 
 \item{outcome}{Name of the outcome variable.}
 
@@ -16,7 +16,7 @@ hoslem(data, outcome, prediction, ...)
 \item{...}{Further arguments are passed on to \code{\link[generalhoslem:logitgof]{generalhoslem::logitgof()}}}
 }
 \value{
-A list of objects of class \link{htest} with one entry per dataset.
+A list of objects of class \code{htest} with one entry per dataset.
 }
 \description{
 Compute Hosmer-Lemeshow Goodness of Fit statistic

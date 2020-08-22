@@ -1,11 +1,11 @@
 #' Compute Hosmer-Lemeshow Goodness of Fit statistic
 #'
-#' @param data Multiply imputed dataset. Either an object of class [mids] or a data frame created with [mice::complete()].
+#' @param data Multiply imputed dataset. Either an object of class [mids] or a data frame created with [complete()][mice::complete.mids()].
 #' @param outcome Name of the outcome variable.
 #' @param prediction A vector of predicted values.
 #' @param ... Further arguments are passed on to [generalhoslem::logitgof()]
 #'
-#' @return A list of objects of class [htest] with one entry per dataset.
+#' @return A list of objects of class `htest` with one entry per dataset.
 #' @export
 hoslem <- function(data, outcome, prediction, ...) {
   data <- data_long(data)
