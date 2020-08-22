@@ -11,7 +11,10 @@
 #' @export
 pool_hoslem <- function(pooled_model, data, outcome, prediction, iter=1000, ...){
   data <- data_long(data)
-  obs <- sapply(hoslem(data, outcome, prediction, ...), "[[", "statistic")
+  tests <- hoslem(data, outcome, prediction, ...)
+  obs <- sapply(tests, "[[", "statistic")
+  df <- sapply(tests, "[[", "parameter")
+  df <- df[!is.na(df)][1]
   boot <- vector(mode="list", length=length(obs))
   boot_hoslem <- matrix(ncol = iter, nrow = length(obs))
   for(i in 1:length(obs)){
@@ -30,5 +33,5 @@ pool_hoslem <- function(pooled_model, data, outcome, prediction, iter=1000, ...)
   }
   vars <- apply(boot_hoslem, 1, sd)^2
   pooled <- pool.scalar(obs, vars)
-  c(hoslem=pooled$qbar, sd=sqrt(pooled$t)) 
+  c(hoslem=pooled$qbar, sd=sqrt(pooled$t), p.value=pchisq(pooled$qbar, df=df, lower.tail=FALSE)) 
 }

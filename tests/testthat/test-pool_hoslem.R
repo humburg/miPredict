@@ -5,7 +5,7 @@ test_that("output has expected format", {
                                        outcome="y", prediction=unlist(pred), iter=10), 
                  "(did not converge)|(numerically 0 or 1)|(too few observations)|(may be incorrect)")
   expect_type(pooled, "double")
-  expect_length(pooled, 2)
+  expect_length(pooled, 3)
 })
 
 test_that("mids object is accepted as input", {
@@ -13,7 +13,7 @@ test_that("mids object is accepted as input", {
                                        outcome="y", prediction=unlist(pred), iter=10), 
                  "(did not converge)|(numerically 0 or 1)|(too few observations)|(may be incorrect)")
   expect_type(pooled, "double")
-  expect_length(pooled, 2)
+  expect_length(pooled, 3)
 })
 
 test_that("predictions are accepted as part of data", {
@@ -21,5 +21,5 @@ test_that("predictions are accepted as part of data", {
                                        outcome="y", iter=10), 
                  "(did not converge)|(numerically 0 or 1)|(too few observations)|(may be incorrect)")
   expect_type(pooled, "double")
-  expect_length(pooled, 2)
+  expect_length(pooled, 3)
 })

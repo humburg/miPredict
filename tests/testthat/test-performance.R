@@ -27,7 +27,7 @@ test_that("output has expected structure", {
                                                      metrics = c("roc", "auc", "brier", "hoslem"))), 
                c("roc", "auc", "brier", "hoslem"))
   expect_type(perf5$hoslem, "double")
-  expect_length(perf5$hoslem, 2)
+  expect_length(perf5$hoslem, 3)
 })
 
 test_that("missing arguments are handled", {
