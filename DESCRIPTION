@@ -1,8 +1,8 @@
 Package: miPredict
 Type: Package
 Title: Predictive models from multiply imputed data
-Version: 0.1.14
-Date: 2020-08-10
+Version: 0.1.15
+Date: 2020-08-22
 Authors@R: person("Peter", "Humburg", email = "p.humburg@unsw.edu.au",
                   role = c("aut", "cre"))
 Maintainer: Peter Humburg <p.humburg@unsw.edu.au>
