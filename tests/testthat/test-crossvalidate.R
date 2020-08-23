@@ -12,3 +12,6 @@ test_that("leave-one-out works", {
   expect_length(cv, nrow(binomData))
 })
 
+test_that("excessive number of folds causes error", {
+  expect_error(cv <- crossvalidate(small_mids, "y", k=5), "Too few observations")
+})

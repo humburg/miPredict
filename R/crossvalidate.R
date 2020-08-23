@@ -3,6 +3,7 @@
 #' @param imputed An object of class [mice::mids] containing the multiply imputed dataset.
 #' @param outcome Name of the outcome variable in `imputed`.
 #' @param k Number of folds to use for cross-validation.
+#' @param force Logical indicating whether cross-validation should be carried out even if the number of observations becomes too small in some of the folds.
 #' @param ... Further arguments passed to [fit_model()].
 #'
 #' @details The original dataset is partitioned into *k* segments for cross-validation in such a way that
@@ -15,7 +16,7 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
 #' @export
-crossvalidate <- function(imputed, outcome, k=10, ...){
+crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   stopifnot(is(imputed, "mids"))
   loo <- FALSE
   if(k == nrow(imputed$data)){
@@ -35,19 +36,31 @@ crossvalidate <- function(imputed, outcome, k=10, ...){
   
   ## check all classes are present in all training sets
   test_composition <- table(data_orig[[outcome]], data_orig[["fold"]])
-  train_composition <- apply(test_composition, 2, function(cmp) table(data_orig[[outcome]] - cmp))
+  train_composition <- apply(test_composition, 2, function(cmp) table(data_orig[[outcome]]) - cmp)
   if(any(train_composition == 0)){
     missing <- which(train_composition == 0, arr.ind = TRUE)
     missing <- missing[order(rownames(missing)), 2]
-    warn <- which(names(missing) == "(Missing)")
-    error <- which(names(missing) != "(Missing)")
+    warn <- which(rownames(missing) == "(Missing)")
+    error <- which(rownames(missing) != "(Missing)")
     if(length(warn)) {
-      msg <- paste("The following folds contain no missing values:", paste(missing[warn], collapse=", "))
+      msg <- paste("The following training sets contain no missing values:", paste(missing[warn], collapse=", "))
       warning(warn)
     }
     if(length(error)){
-      msg <- paste(paste("Class ", names(m), "is missing in training set ", m), collapse="\n  ")
-      error("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
+      msg <- paste(paste("Class ", names(missing), "is missing in training set ", missing), collapse="\n  ")
+      stop("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
+    }
+  }
+  if(any(train_composition < 8)) {
+    missing <- which(train_composition < 8, arr.ind = TRUE)
+    missing <- missing[order(rownames(missing)), 2]
+    msg <- which(rownames(missing) != "(Missing)")
+    msg <- paste(paste("Too few observations of class ", names(msg), "in training set ", msg), collapse="\n  ")
+    msg <- paste0("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
+    if(force){
+      warning(msg)
+    } else {
+      stop(msg)
     }
   }
   

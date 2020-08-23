@@ -16,7 +16,10 @@ for(i in 1:ncol(x)){
   x[idx, i] <- NA
 }
 binomData <- as.data.frame(c(as.data.frame(x), data.frame(y=y)))
-binom_mids <- mice(binomData, m=5, printFlag=FALSE) 
+binom_mids <- mice(binomData, m=5, printFlag=FALSE)
+binomData_small <- binomData %>% filter(y == 1)
+binomData_small <- rbind(binomData_small, (binomData %>% filter(y == 0))[1:4,])
+small_mids <- mice(binomData_small, m=5, printFlag=FALSE)
 suppressWarnings(binom_fit <- fit_model(binom_mids, outcome="y"))
 complete_data <- complete(binom_mids, action="long")
 pred <- unclass(by(complete_data, complete_data$.imp, function(x) predict(binom_fit$pooled_model, newdata = x, type = "response")))
