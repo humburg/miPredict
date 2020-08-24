@@ -22,6 +22,7 @@ Collate:
     'candidate_models.R'
     'class_perf.R'
     'clean_data.R'
+    'crossvalidate.R'
     'fit_model.R'
     'hoslem.R'
     'internals.R'

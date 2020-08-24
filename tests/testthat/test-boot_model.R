@@ -1,5 +1,5 @@
 context("bootstrapping")
-
+skip_on_cran()
 suppressWarnings(boot_result <- boot_model(binom_mids, "y", iter=3, metrics="brier"))
   
 test_that("progress is reported", {
