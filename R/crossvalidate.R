@@ -25,9 +25,10 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   }
   else message("Running ", k, "-fold cross-validation.\n  average number of observations per fold: ", nrow(imputed$data)/k)
   pred <- numeric(nrow(imputed$data)) + NA
-  if(explicit_na <- is.factor(imputed$data[[outcome]])){
-    imputed$data <- imputed$data %>% mutate(!!outcome := forcats::fct_explicit_na(.data[[outcome]]))
+  if(!is.factor(imputed$data[[outcome]])){
+    imputed$data <- imputed$data %>% mutate(!!outcome := factor(.data[[outcome]]))
   }
+  imputed$data <- imputed$data %>% mutate(!!outcome := forcats::fct_explicit_na(.data[[outcome]]))
   if(loo){
    data_orig <- imputed$data %>% mutate(fold=1:n())
   } else {
@@ -50,7 +51,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     missing <- which(train_composition < 8, arr.ind = TRUE)
     missing <- missing[order(rownames(missing)), 2]
     msg <- which(rownames(missing) != "(Missing)")
-    msg <- paste(paste("Too few observations of class ", names(msg), "in training set ", msg), collapse="\n  ")
+    msg <- paste(paste("Too few observations of class ", rownames(msg), "in training set ", msg), collapse="\n  ")
     msg <- paste0("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
     if(force){
       warning(msg)
@@ -61,9 +62,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   
   for(i in 1:k){
     data_smpl <- data_orig %>% filter(fold != i) %>%  select(-fold)
-    if(explicit_na){
-      data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)'))
-    }
+    data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)'))
     data_imp <- mice(data=data_smpl, m=imputed$m, method=imputed$method, printFlag=FALSE)
     fit <- fit_model(data_imp, outcome=outcome, ...)
     pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, fold==i))
