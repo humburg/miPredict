@@ -41,14 +41,9 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     missing <- which(train_composition == 0, arr.ind = TRUE)
     missing <- missing[order(rownames(missing)), 2]
     warn <- which(rownames(missing) == "(Missing)")
-    error <- which(rownames(missing) != "(Missing)")
     if(length(warn)) {
       msg <- paste("The following training sets contain no missing values:", paste(missing[warn], collapse=", "))
       warning(warn)
-    }
-    if(length(error)){
-      msg <- paste(paste("Class ", names(missing), "is missing in training set ", missing), collapse="\n  ")
-      stop("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
     }
   }
   if(any(train_composition < 8)) {
