@@ -62,7 +62,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   
   for(i in 1:k){
     data_smpl <- data_orig %>% filter(fold != i) %>%  select(-fold)
-    data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)'))
+    data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)')) %>% clean_data()
     data_imp <- mice(data=data_smpl, m=imputed$m, method=imputed$method, printFlag=FALSE)
     fit <- fit_model(data_imp, outcome=outcome, ...)
     pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, fold==i), type="response")
