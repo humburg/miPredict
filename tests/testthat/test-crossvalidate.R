@@ -5,6 +5,8 @@ common_warn <- "(not converge)|(0 or 1)|(scale = TRUE)"
 test_that("output has expected structure", {
   cv <- suppressWarnings(crossvalidate(binom_mids, "y", k=5))
   expect_length(cv, nrow(binomData))
+  expect_gte(min(cv, na.rm=TRUE), 0)
+  expect_lte(max(cv, na.rm=TRUE), 1)
 })
 
 test_that("leave-one-out works", {
