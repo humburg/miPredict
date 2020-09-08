@@ -9,7 +9,7 @@ pool_hoslem(pooled_model, data, outcome, prediction, iter = 1000, ...)
 \arguments{
 \item{pooled_model}{Model with pooled parameter estimates.}
 
-\item{data}{Multiply imputed data. Either an object of class \link{mids} or a data frame as produced by \code{\link[mids:complete]{mids::complete()}}.}
+\item{data}{Multiply imputed data. Either an object of class \link{mids} or a data frame as produced by \code{\link[mice:complete.mids]{mice::complete()}}.}
 
 \item{outcome}{Name of the column containing the outcome variable.}
 

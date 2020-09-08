@@ -41,7 +41,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   if(any(train_composition == 0)){
     missing <- which(train_composition == 0, arr.ind = TRUE)
     missing <- missing[order(rownames(missing)), 2]
-    warn <- which(rownames(missing) == "(Missing)")
+    warn <- which(names(missing) == "(Missing)")
     if(length(warn)) {
       msg <- paste("The following training sets contain no missing values:", paste(missing[warn], collapse=", "))
       warning(warn)
@@ -50,8 +50,8 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   if(any(train_composition < 8)) {
     missing <- which(train_composition < 8, arr.ind = TRUE)
     missing <- missing[order(rownames(missing)), 2]
-    msg <- which(rownames(missing) != "(Missing)")
-    msg <- paste(paste("Too few observations of class ", rownames(msg), "in training set ", msg), collapse="\n  ")
+    msg <- which(names(missing) != "(Missing)")
+    msg <- paste(paste("Too few observations of class ", names(missing)[msg], "in training set ", missing[msg]), collapse="\n  ")
     msg <- paste0("The following errors occured while partitioning the data:\n", "  ", msg, "\n")
     if(force){
       warning(msg)
@@ -65,7 +65,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)')) %>% clean_data()
     data_imp <- mice(data=data_smpl, m=imputed$m, method=imputed$method, printFlag=FALSE)
     fit <- fit_model(data_imp, outcome=outcome, ...)
-    pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, fold==i), type="response")
+    pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, fold==i) %>% clean_data(), type="response")
   }
   pred
 }

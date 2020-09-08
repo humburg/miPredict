@@ -1,7 +1,7 @@
 #' Pooling Hosmer-Lemeshow Goodness of Fit Statistic
 #'
 #' @param pooled_model Model with pooled parameter estimates.
-#' @param data Multiply imputed data. Either an object of class [mids] or a data frame as produced by [mids::complete()].
+#' @param data Multiply imputed data. Either an object of class [mids] or a data frame as produced by [mice::complete()].
 #' @param outcome Name of the column containing the outcome variable.
 #' @param prediction Model predictions as a single vector.
 #' @param iter Number of iterations for bootstrapping.

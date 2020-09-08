@@ -7,7 +7,7 @@
 crossvalidate(imputed, outcome, k = 10, force = FALSE, ...)
 }
 \arguments{
-\item{imputed}{An object of class \link[mice:mids]{mice::mids} containing the multiply imputed dataset.}
+\item{imputed}{An object of class \link[mice:mids-class]{mice::mids} containing the multiply imputed dataset.}
 
 \item{outcome}{Name of the outcome variable in \code{imputed}.}
 
