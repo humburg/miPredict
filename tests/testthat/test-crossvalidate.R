@@ -3,8 +3,8 @@ context("cross-validation")
 common_warn <- "(not converge)|(0 or 1)|(scale = TRUE)"
 
 test_that("output has expected structure", {
-  cv <- suppressWarnings(crossvalidate(binom_mids, "y", k=5))
-  expect_length(cv, nrow(binomData))
+  cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
+  expect_length(cv, nrow(nhanes_large))
   expect_gte(min(cv, na.rm=TRUE), 0)
   expect_lte(max(cv, na.rm=TRUE), 1)
 })
@@ -12,8 +12,8 @@ test_that("output has expected structure", {
 test_that("leave-one-out works", {
   skip_on_ci()
   skip_on_cran()
-  expect_warning(cv <- crossvalidate(binom_mids, "y", k=100), common_warn)
-  expect_length(cv, nrow(binomData))
+  expect_warning(cv <- crossvalidate(nhanes_mids, "hyp", k=100), common_warn)
+  expect_length(cv, nrow(nhanes_large))
 })
 
 test_that("low number of outcomes is flagged", {

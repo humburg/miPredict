@@ -3,7 +3,8 @@ library(mice)
 set.seed(42)
 
 ## Impute data
-nhanes_mids <- mice(nhanes2, m=5, printFlag=FALSE) 
+nhanes_large <- nhanes2 %>% dplyr::slice_sample(n=100, replace=TRUE) %>% scale_data()
+nhanes_mids <- mice(nhanes_large, m=5, printFlag=FALSE) 
 nhanes_long <- complete(nhanes_mids, action="long")
 nhanes_clean <- nhanes_long %>% clean_data()
 
