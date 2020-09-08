@@ -6,6 +6,7 @@
 #' @param ... Further arguments are passed on to [generalhoslem::logitgof()]
 #'
 #' @return A list of objects of class `htest` with one entry per dataset.
+#' @importFrom stats pchisq
 #' @export
 hoslem <- function(data, outcome, prediction, ...) {
   data <- data_long(data)
