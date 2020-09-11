@@ -5,8 +5,7 @@
 \title{Assessing model predictive performance}
 \usage{
 class_perf(
-  model,
-  data,
+  predictions,
   outcome,
   metrics = c("auc", "specificity", "sensitivity", "accuracy", "precision"),
   bootstrap = FALSE,
@@ -15,11 +14,9 @@ class_perf(
 )
 }
 \arguments{
-\item{model}{An object of class \link{glm}.}
+\item{predictions}{A numeric vector of predicted class probabilities.}
 
-\item{data}{A data frame to use in performance assessment.}
-
-\item{outcome}{Name of outcome in \code{data}.}
+\item{outcome}{A vector (numeric or factor) of outcome labels.}
 
 \item{metrics}{Character vector indicating which performance measures should be computed. One or more of \emph{auc}, \emph{specificity}, \emph{sensitivity}, \emph{accuracy}, \emph{precision}.}
 
