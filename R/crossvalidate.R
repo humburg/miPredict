@@ -9,7 +9,7 @@
 #' @details The original dataset is partitioned into *k* segments for cross-validation in such a way that
 #' the proportion of each outcome, including missing values, are preserved as far as possible.
 #' 
-#' @return A vector of predictions.
+#' @return A numeric vector of predictions of class *cv*.
 #' @importFrom rlang sym
 #' @importFrom rlang !!
 #' @importFrom dplyr n
@@ -67,5 +67,6 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     fit <- fit_model(data_imp, outcome=outcome, ...)
     pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, .data$fold==i) %>% clean_data(), type="response")
   }
+  class(pred) <- "cv"
   pred
 }

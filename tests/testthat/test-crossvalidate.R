@@ -4,6 +4,7 @@ common_warn <- "(not converge)|(0 or 1)|(scale = TRUE)"
 
 test_that("output has expected structure", {
   cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
+  expect_s3_class(cv, "cv")
   expect_length(cv, nrow(nhanes_large))
   expect_gte(min(cv, na.rm=TRUE), 0)
   expect_lte(max(cv, na.rm=TRUE), 1)
