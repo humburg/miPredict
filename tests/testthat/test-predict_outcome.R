@@ -1,5 +1,5 @@
 context("predictions")
-
+set.seed(1764)
 predictions <- predict_outcome(binom_fit$pooled_model, binom_mids)
 
 test_that("output has expected structure", {
