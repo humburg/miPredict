@@ -109,6 +109,4 @@ performance.binomial <- function(x, data, outcome, metrics=c("roc", "auc", "spec
   
   perf
 }
-
-  perf
-}
+                        
