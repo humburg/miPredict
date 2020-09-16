@@ -9,12 +9,13 @@
 #' @details The original dataset is partitioned into *k* segments for cross-validation in such a way that
 #' the proportion of each outcome, including missing values, are preserved as far as possible.
 #' 
-#' @return A vector of predictions.
+#' @return A numeric vector of predictions of class *cv*.
 #' @importFrom rlang sym
 #' @importFrom rlang !!
 #' @importFrom dplyr n
 #' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
+#' @importFrom dplyr rename
 #' @export
 crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
   stopifnot(is(imputed, "mids"))
@@ -24,7 +25,6 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     message("Running leave-one-out cross-validation")
   }
   else message("Running ", k, "-fold cross-validation.\n  average number of observations per fold: ", nrow(imputed$data)/k)
-  pred <- numeric(nrow(imputed$data)) + NA
   if(!is.factor(imputed$data[[outcome]])){
     imputed$data <- imputed$data %>% mutate(!!outcome := factor(.data[[outcome]]))
   }
@@ -60,12 +60,19 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     }
   }
   
+  imp_test <- complete(imputed, action="long") %>% mutate(fold=rep(data_orig$fold, imputed$m), prediction=NA, se=NA) %>% 
+    mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)')) %>% clean_data()
   for(i in 1:k){
     data_smpl <- data_orig %>% filter(.data$fold != i) %>%  select(-.data$fold)
     data_smpl <- data_smpl %>% mutate(!!outcome := forcats::fct_recode(.data[[outcome]], NULL='(Missing)')) %>% clean_data()
     data_imp <- mice(data=data_smpl, m=imputed$m, method=imputed$method, printFlag=FALSE)
     fit <- fit_model(data_imp, outcome=outcome, ...)
-    pred[data_orig$fold == i] <- predict(fit$pooled_model, newdata=filter(data_orig, .data$fold==i) %>% clean_data(), type="response")
+    imp_pred <- predict(fit$pooled_model, newdata=filter(imp_test, .data$fold==i) %>% clean_data(), type="response", se.fit=TRUE)
+    imp_test[data_orig$fold == i, "prediction"] <- imp_pred$fit
+    imp_test[data_orig$fold == i, "se"] <- imp_pred$se.fit
   }
+  pred <- by(imp_test, imp_test$.id, function(x) pool.scalar(x$prediction, x$se^2)[c("qbar", "t")])
+  pred <- unclass(pred) %>% sapply(unlist) %>% t() %>% as.data.frame() %>% mutate(se=sqrt(t)) %>% select(-t) %>% rename(prediction=.data$qbar)
+  class(pred) <- c("cv", class(pred))
   pred
 }

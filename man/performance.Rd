@@ -2,37 +2,21 @@
 % Please edit documentation in R/performance.R
 \name{performance}
 \alias{performance}
-\alias{performance.binomial}
 \title{Performance metrics for predictive models}
 \usage{
-performance(model, data, outcome, ...)
-
-\method{performance}{binomial}(
-  model,
-  data,
-  outcome,
-  metrics = c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision",
-    "brier", "r2", "hoslem"),
-  model_fits,
-  ...
-)
+performance(x, ...)
 }
 \arguments{
-\item{model}{The (pooled) model to be evaluated.}
-
-\item{data}{Data to be used in the evaluation.}
-
-\item{outcome}{The name of the outcome measure. This should be the name of a variable in \code{data}.}
+\item{x}{The model to be evaluated.}
 
 \item{...}{Further arguments to be passed to specific methods}
-
-\item{metrics}{A character vector indicating the metrics to be computed}
-
-\item{model_fits}{A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).}
 }
 \value{
 A list of performance metrics.
 }
 \description{
 Performance metrics for predictive models
+}
+\seealso{
+\code{\link[=performance.binomial]{performance.binomial()}}, \code{\link[=performance.cv]{performance.cv()}}
 }

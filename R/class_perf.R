@@ -2,9 +2,8 @@
 #' 
 #' Compute performance metrics for logistic regression models.
 #'
-#' @param model An object of class [glm].
-#' @param data A data frame to use in performance assessment.
-#' @param outcome Name of outcome in `data`.
+#' @param predictions A numeric vector of predicted class probabilities.
+#' @param outcome A vector (numeric or factor) of outcome labels.
 #' @param metrics Character vector indicating which performance measures should be computed. One or more of *auc*, *specificity*, *sensitivity*, *accuracy*, *precision*.
 #' @param bootstrap Logical indicating whether bootstrap samples should be generated from `data`.
 #' @param iter Number of bootstrap iterations to use.
@@ -25,12 +24,9 @@
 #' @importFrom dplyr select
 #' @author Peter Humburg
 #'
-class_perf <- function(model, data, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
+class_perf <- function(predictions, outcome, metrics=c("auc", "specificity", "sensitivity", "accuracy", "precision"), bootstrap=FALSE, iter=2000, level=0.95){
   metrics <- match.arg(metrics, several.ok = TRUE)
-  if(is(data, "mids")) {
-    stop("Multiply imputed data is not supported directly by `class_perf()`. Use `performance()` instead.")
-  }
-  roc <- pROC::roc(data[[outcome]], predict(model, data), 
+  roc <- pROC::roc(outcome, predictions, 
                    direction="<", levels=c("0", "1"))
   ans <- vector(mode="list", length(metrics))
   names(ans) <- metrics

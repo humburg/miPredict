@@ -18,7 +18,7 @@ crossvalidate(imputed, outcome, k = 10, force = FALSE, ...)
 \item{...}{Further arguments passed to \code{\link[=fit_model]{fit_model()}}.}
 }
 \value{
-A vector of predictions.
+A numeric vector of predictions of class \emph{cv}.
 }
 \description{
 Cross-validation
