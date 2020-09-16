@@ -1,4 +1,6 @@
 #' @import mice
+#' @importFrom stats deviance
+#' @importFrom stats extractAIC
 #' @export
 pool_model <-
 function(model, data) {

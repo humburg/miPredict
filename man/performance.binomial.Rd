@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{The pooled logistic regression model to be evaluated.}
+\item{x}{The model to be evaluated.}
 
 \item{data}{Data to be used in the evaluation.}
 
@@ -24,6 +24,8 @@
 \item{metrics}{A character vector indicating the metrics to be computed}
 
 \item{model_fits}{A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).}
+
+\item{...}{Further arguments to be passed to specific methods}
 }
 \description{
 Performance metrics for logistic regression models

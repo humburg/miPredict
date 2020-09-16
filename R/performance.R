@@ -14,12 +14,12 @@ performance <- function(x, ...){
 
 #' Performance metrics for logistic regression models
 #' 
-#' @param x The pooled logistic regression model to be evaluated.
 #' @param data Data to be used in the evaluation.
 #' @param metrics A character vector indicating the metrics to be computed
 #' @param outcome The name of the outcome measure. This should be the name of a variable in `data`.
 #' @param model_fits A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).
 #'
+#' @inheritParams performance
 #' @method performance binomial
 #' @importFrom pROC roc
 #' @importFrom pROC ci

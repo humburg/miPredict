@@ -72,7 +72,7 @@ crossvalidate <- function(imputed, outcome, k=10, force=FALSE, ...){
     imp_test[data_orig$fold == i, "se"] <- imp_pred$se.fit
   }
   pred <- by(imp_test, imp_test$.id, function(x) pool.scalar(x$prediction, x$se^2)[c("qbar", "t")])
-  pred <- unclass(pred) %>% sapply(unlist) %>% t() %>% as.data.frame() %>% mutate(se=sqrt(t)) %>% select(-t) %>% rename(prediction=qbar)
+  pred <- unclass(pred) %>% sapply(unlist) %>% t() %>% as.data.frame() %>% mutate(se=sqrt(t)) %>% select(-t) %>% rename(prediction=.data$qbar)
   class(pred) <- c("cv", class(pred))
   pred
 }
