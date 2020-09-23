@@ -109,4 +109,48 @@ performance.binomial <- function(x, data, outcome, metrics=c("roc", "auc", "spec
   
   perf
 }
-                        
+
+#' Performance metrics based on cross-validation results
+#' @param x An object of class *cv* as produced by [crossvalidate()]. 
+#' @param outcome A vector (numeric or factor) of outcome labels. Alternatively, a character vector of length 1 giving the name of the outcome variable.
+#' @param metrics Character vector indicating the performance metrics to be computed.
+#' @param pool.metrics Logical indicating whether performance metrics should be computed separately for each imputed dataset and then pooled (TRUE, the default),
+#' or whether metrics should be computed on pooled predictions (FALSE).
+#' @param ... Further arguments passed on to [class_perf()].
+#' 
+#' @note When using `pool.metrics = FALSE` with imputed outcomes it may be helpful to use [call_imputed()] to create a consensus set of outcomes first.
+#' @return A list with the requested performance metrics
+#' @seealso [crossvalidate()]
+#' @method performance cv
+#' @export
+performance.cv <- function(x, outcome, metrics=c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"), pool.metrics=TRUE, ...) {
+  metrics <- match.arg(metrics, several.ok = TRUE)
+  dots <- list(...)
+  
+  perf <- vector(length=length(metrics), mode="list")
+  names(perf) <- metrics
+  
+  class_perf_metrics <- intersect(metrics, eval(formals(class_perf)$metrics))
+  class_perf_args <- list()
+  if(length(dots)){
+    class_perf_args <- dots[names(dots) %in% names(formals(class_perf))]
+  }
+  if(!pool.metrics){
+    if(is.character(outcome) && length(outcome) == 1) {
+      outcome <- x$pooled[[outcome]]
+    }
+    if(length(class_perf_metrics)) {
+      perf[class_perf_metrics] <- do.call(class_perf, c(list(predictions=x$pooled$prediction, outcome=outcome, metrics=class_perf_metrics), class_perf_args))
+    }
+    if("brier" %in% metrics) {
+      perf[["brier"]] <- BrierDecomp(x$pooled$prediction, outcome)
+    }
+  } else {
+    if(is.character(outcome) && length(outcome) == 1) {
+      outcome <- lapply(x$imputed, "[[", outcome)
+    }
+    
+  }
+    
+  perf
+}
