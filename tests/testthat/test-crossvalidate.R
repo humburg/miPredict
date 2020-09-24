@@ -8,8 +8,8 @@ test_that("output has expected structure", {
   expect_length(cv, 2)
   expect_named(cv, c("pooled", "imputed"))
   expect_equal(nrow(cv$pooled), nrow(nhanes_large))
-  expect_length(cv$pooled, 2)
-  expect_named(cv$pooled, c("prediction", "se"))
+  expect_length(cv$pooled, 3)
+  expect_named(cv$pooled, c("prediction", "se", "hyp"))
   expect_gte(min(cv$pooled$prediction, na.rm=TRUE), 0)
   expect_lte(max(cv$pooled$prediction, na.rm=TRUE), 1)
   expect_equal(sum(sapply(cv$imputed, nrow)), nrow(nhanes_large)*nhanes_mids$m)
@@ -23,7 +23,8 @@ test_that("leave-one-out works", {
   skip_on_ci()
   skip_on_cran()
   expect_warning(cv <- crossvalidate(nhanes_mids, "hyp", k=100), common_warn)
-  expect_length(cv$imputed, nrow(nhanes_large))
+  expect_length(cv$imputed, nhanes_mids$m)
+  expect_equal(nrow(cv$imputed[[1]]), nrow(nhanes_large))
 })
 
 test_that("low number of outcomes is flagged", {

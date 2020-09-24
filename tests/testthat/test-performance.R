@@ -41,3 +41,24 @@ test_that("performance metrics fail gracefully", {
 test_that("arguments are passed on", {
   expect_warning(performance(binom_fit$pooled_model, binom_mids, "y", "hoslem", g=5), "< 1")
 })
+
+test_that("pooled CV performance can be calculated", {
+  cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
+  set.seed(976)
+  expect_named(perf <- performance(cv, call_imputed(nhanes_mids, "hyp")), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
+  set.seed(976)
+  expect_named(perf2 <- performance(cv, "hyp"), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
+  expect_equal(perf, perf2)
+})
+
+test_that("CV performance can be pooled", {
+  cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
+  expect_named(perf <- performance(cv, call_imputed(nhanes_mids, "hyp")), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
+  expect_s3_class(perf$roc, "roc")
+  expect_s3_class(perf$auc, "ci.auc")
+  expect_type(perf$specificity, "double")
+  expect_type(perf$sensitivity, "double")
+  expect_type(perf$accuracy, "double")
+  expect_type(perf$precision, "double")
+  expect_type(perf$brier, "double")
+})
