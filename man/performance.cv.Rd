@@ -27,9 +27,6 @@ A list with the requested performance metrics
 \description{
 Performance metrics based on cross-validation results
 }
-\note{
-If the data contains missing outcomes that are to be imputed it may be helpful to use \code{\link[=call_imputed]{call_imputed()}} to create a consensus set of outcomes first.
-}
 \seealso{
 \code{\link[=crossvalidate]{crossvalidate()}}
 }
