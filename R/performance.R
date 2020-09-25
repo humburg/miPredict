@@ -116,7 +116,6 @@ performance.binomial <- function(x, data, outcome, metrics=c("roc", "auc", "spec
 #' @param metrics Character vector indicating the performance metrics to be computed.
 #' @param ... Further arguments passed on to [class_perf()].
 #' 
-#' @note If the data contains missing outcomes that are to be imputed it may be helpful to use [call_imputed()] to create a consensus set of outcomes first.
 #' @return A list with the requested performance metrics
 #' @seealso [crossvalidate()]
 #' @method performance cv
