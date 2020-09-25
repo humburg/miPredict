@@ -13,5 +13,6 @@ test_that("data frames are handled correctly", {
 })
 
 test_that("results have not changed",{
+  skip_on_ci()
   expect_known_output(print(round(predictions, 5)), "predict_outcome.out")
 })
