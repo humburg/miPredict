@@ -12,6 +12,6 @@
 #' @importFrom dplyr summarise
 #' @export
 call_imputed <- function(x, outcome, threshold=0.5) {
-  imp_out <- x %>%  data_long() %>% group_by(.data$.id) %>% summarise(!!outcome:=mean(.data[[outcome]]), .groups="drop")
+  imp_out <- x %>%  data_long() %>% clean_data() %>% group_by(.data$.id) %>% summarise(!!outcome:=mean(.data[[outcome]]), .groups="drop")
   ifelse(imp_out[[outcome]] < threshold, 0, 1)
 }
