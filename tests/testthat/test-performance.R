@@ -46,6 +46,7 @@ test_that("pooled CV performance can be calculated", {
   cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
   set.seed(976)
   expect_named(perf <- performance(cv, call_imputed(nhanes_mids, "hyp")), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
+  expect_equal(colnames(perf$brier), c("Brier", "Reliability", "Resolution", "Uncertainty"))
   set.seed(976)
   expect_named(perf2 <- performance(cv, "hyp"), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
   expect_equal(perf, perf2)
