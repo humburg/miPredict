@@ -143,7 +143,11 @@ performance.cv <- function(x, outcome, metrics=c("roc", "auc", "specificity", "s
     perf$roc <- roc(outcome, x$pooled$prediction, direction = "<")
   }
   if("brier" %in% metrics) {
-    perf[["brier"]] <- BrierDecomp(x$pooled$prediction, outcome)
+    brier <- BrierDecomp(x$pooled$prediction, outcome)
+    brier <- cbind(Brier=brier[,"REL"] - brier[, "RES"] + brier[,"UNC"], brier)
+    brier[2,1] <- sqrt(sum(brier[2,2:4]^2))
+    colnames(brier) <- c("Brier", "Reliability", "Resolution", "Uncertainty")
+    perf[["brier"]] <- brier
   }
   
   perf
