@@ -3,7 +3,7 @@
 #' @param x An object of class [cv].
 #' @param ... Further arguments are ignored.
 #' @method plot cv
-#' @importFrom classifierplots
+#' @importFrom classifierplots classifierplots
 plot.cv <- function(x, ...) {
   classifierplots(as.factor(x$pooled[[3]]), x$pooled$prediction)
 }
