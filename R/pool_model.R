@@ -4,6 +4,7 @@
 #' @export
 pool_model <-
 function(model, data) {
+  data <- data %>% data_long()
   estimates <- pool(model$fit)
   pooled_coefs <- estimates$pooled[-1, "estimate"]
   names(pooled_coefs) <- estimates$pooled[-1, "term"]
