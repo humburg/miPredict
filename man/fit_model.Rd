@@ -9,7 +9,8 @@ fit_model(
   outcome,
   family = "binomial",
   s = c("lambda.min", "lambda.1se"),
-  scale = FALSE
+  scale = FALSE,
+  predictors
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ fit_model(
 for the optimal \eqn{\lambda} determined by cross-validation or \code{lambda.1se} for the optimal \eqn{\lambda + 1} standard error.}
 
 \item{scale}{Logical indicating whether input data should be scaled.}
+
+\item{predictors}{A character vector with the names of variables to include as predictors. If this is provided the model is fixed and no variable selection will take place.}
 }
 \value{
 A list with components

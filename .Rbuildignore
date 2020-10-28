@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 Dockerfile
 ^.*\.yml
+^\.rstudio
+^\.config
