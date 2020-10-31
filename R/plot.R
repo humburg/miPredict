@@ -4,6 +4,7 @@
 #' @param ... Further arguments are ignored.
 #' @method plot cv
 #' @importFrom classifierplots classifierplots
+#' @export
 plot.cv <- function(x, ...) {
   classifierplots(as.factor(x$pooled[[3]]), x$pooled$prediction)
 }
