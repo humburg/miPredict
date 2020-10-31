@@ -5,3 +5,5 @@
 .Renviron
 .rstudio
 .local
+.bash_history
+.config/rstudio/rstudio-prefs.json
