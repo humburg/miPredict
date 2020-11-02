@@ -2,6 +2,7 @@
 
 S3method(performance,binomial)
 S3method(performance,cv)
+S3method(plot,cv)
 export(boot_model)
 export(call_imputed)
 export(candidate_models)
