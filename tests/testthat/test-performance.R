@@ -63,3 +63,9 @@ test_that("CV performance can be pooled", {
   expect_type(perf$precision, "double")
   expect_type(perf$brier, "double")
 })
+
+test_that("performace of fixed models can be calculated", {
+  expect_silent(fit_fixed <- fit_model(nhanes_mids, outcome="hyp", predictors="bmi"))
+  expect_named(suppressWarnings(perf_fixed <- performance(fit_fixed$pooled_model, nhanes_mids, "hyp", metrics = c("roc", "auc", "brier", "r2"), 
+                                                     fit_fixed$selected_model$fit)), c("roc", "auc", "brier", "r2"))
+})
