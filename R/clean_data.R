@@ -14,8 +14,8 @@ clean_data <- function(data){
   if(length(factors)){
     expanded <- vector(mode="list", length=length(factors))
     names(expanded) <- names(data)[factors]
-    for(i in factors){
-      expanded[[i]] <- model.matrix(as.formula(paste("~ 0", names(expanded)[i], sep="+")))
+    for(i in names(expanded)){
+      expanded[[i]] <- model.matrix(as.formula(paste("~ 1", i, sep="+")), data=data)[, -1]
     }
     expanded <- do.call(cbind, expanded)
     data <- data[,-factors]
