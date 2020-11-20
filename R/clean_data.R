@@ -19,10 +19,16 @@ clean_data <- function(data){
       expanded[[i]] <- cbind(id=rownames(expanded[[i]]), as.data.frame(expanded[[i]]))
       if(ncol(expanded[[i]]) == 2) names(expanded[[i]])[2] <- names(expanded[i])
     }
-    expanded <- Reduce(function(x, y) full_join(x,y, by="id"), expanded)
+    if(length(expanded) > 1) {
+      expanded <- Reduce(function(x, y) full_join(x,y, by="id"), expanded)
+    } else{
+      expanded <- expanded[[1]]
+    }
     data <- data[, -factors]
-    data <- cbind(data, expanded[,-which(names(expanded) == "id")])
+    expanded <- expanded[,-which(names(expanded) == "id"), drop=FALSE]
+    data <- cbind(data, expanded)
   }
+  names(data) <- make.names(names(data))
   
   data
 }
