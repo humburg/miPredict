@@ -16,9 +16,6 @@ factors converted to integer vectors.
 \description{
 Prepare data for use with glmnet
 }
-\note{
-Currently only supports binary factors. Expansion into dummy variables is not performed.
-}
 \examples{
 library(mice)
 clean_data(nhanes2)
