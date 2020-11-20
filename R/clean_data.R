@@ -4,7 +4,7 @@
 #'
 #' @return A *data.frame* of the same structure as `data` but with all
 #' factors converted to integer vectors.
-#' @note Currently only supports binary factors. Expansion into dummy variables is not performed.
+#' @importFrom dplyr full_join
 #' @export
 #' @examples
 #' library(mice)
@@ -15,11 +15,13 @@ clean_data <- function(data){
     expanded <- vector(mode="list", length=length(factors))
     names(expanded) <- names(data)[factors]
     for(i in names(expanded)){
-      expanded[[i]] <- model.matrix(as.formula(paste("~ 1", i, sep="+")), data=data)[, -1]
+      expanded[[i]] <- model.matrix(as.formula(paste("~ 1", i, sep="+")), data=data)[, -1, drop=FALSE]
+      expanded[[i]] <- cbind(id=rownames(expanded[[i]]), as.data.frame(expanded[[i]]))
+      if(ncol(expanded[[i]]) == 2) names(expanded[[i]])[2] <- names(expanded[i])
     }
-    expanded <- do.call(cbind, expanded)
-    data <- data[,-factors]
-    data <- cbind(data, expanded)
+    expanded <- Reduce(function(x, y) full_join(x,y, by="id"), expanded)
+    data <- data[, -factors]
+    data <- cbind(data, expanded[,-which(names(expanded) == "id")])
   }
   
   data
