@@ -44,7 +44,7 @@ function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scal
     fit <- with(data, glm(formula(formula), family=family))
     model <- list(formula=stats::formula(formula), fit=fit$analyses)
   } else {
-    data <- data_long(data)
+    data <- data_long(data) %>% clean_data()
     if(scale) {
       data <- data %>% scale_data()
     } else if(needs_scaling(data)){
