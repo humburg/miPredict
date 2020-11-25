@@ -5,6 +5,7 @@
 #' @return A *data.frame* of the same structure as `data` but with all
 #' factors converted to integer vectors.
 #' @importFrom dplyr full_join
+#' @importFrom stats model.matrix
 #' @export
 #' @examples
 #' library(mice)
