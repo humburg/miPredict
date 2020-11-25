@@ -1,6 +1,5 @@
 language: r
 r:
-  - oldrel
   - release
 r_build_args: "--no-manual"
 r_check_args: "--no-manual"
