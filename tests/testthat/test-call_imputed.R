@@ -7,5 +7,5 @@ test_that("output has expected structure", {
 })
 
 test_that("results are unchanged", {
-  expect_equivalent(unclass(table(call_imputed(nhanes_mids, "hyp"))), c(68, 32))
+  expect_equivalent(unclass(table(call_imputed(nhanes_mids, "hyp"))), c(76, 24))
 })
