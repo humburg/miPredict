@@ -16,3 +16,8 @@ test_that("results have not changed",{
   skip_on_ci()
   expect_known_output(print(round(predictions, 5)), "predict_outcome.out")
 })
+
+test_that("multi-level factors are handled correctly", {
+  suppressWarnings(model <- fit_model(nhanes_mids, outcome="hyp", scale=TRUE))
+  expect_silent(pred <- predict_outcome(model$pooled_model, nhanes_long))
+})
