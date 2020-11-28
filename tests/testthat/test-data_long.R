@@ -1,7 +1,11 @@
 context("data in long format")
 
 test_that("long data is unchanged", {
-  expect_equal(data_long(nhanes_long), nhanes_long)
+  expect_equal(data_long(nhanes_long, clean=FALSE), nhanes_long)
+})
+
+test_that("multi-level factors are expanded", {
+  expect_equal(ncol(nhanes_long)+1, ncol(data_long(nhanes_long, clean=TRUE)))
 })
 
 test_that("imputed data is converted to long format", {
