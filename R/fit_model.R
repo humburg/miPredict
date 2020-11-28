@@ -40,8 +40,8 @@ function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scal
   s <- match.arg(s)
   ## skip variable selection if a set of predictors is provided
   if(!missing(predictors) && !is.null(predictors) && length(predictors) > 0){
-    formula <- paste0(outcome, "~", paste(predictors, collapse="+"))
-    fit <- with(data, glm(formula(formula), family=family))
+    formula <- get_formula(predictors, outcome, data)
+    fit <- with(data %>% expand_factors(), glm(formula(formula), family=family))
     model <- list(formula=stats::formula(formula), fit=fit$analyses)
   } else {
     data <- data_long(data) %>% clean_data()
