@@ -7,6 +7,7 @@ test_that("output has expected structure", {
   expect_s3_class(fit$selected_model$formula, "formula")
   expect_length(fit$selected_model$fit, nhanes_mids$m)
   expect_s3_class(fit$pooled_model, "binomial")
+  expect_equal(attr(fit$pooled_model, "scale"), TRUE)
 })
 
 test_that("unscaled data triggers warning", {

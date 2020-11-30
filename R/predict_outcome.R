@@ -10,7 +10,10 @@
 #' @export
 predict_outcome <-
 function(fit, data, ...) {
-  data <- data_long(data)
+  data <- data_long(data) %>% clean_data()
+  if(!is.null(attr(fit, "scale")) && attr(fit, "scale")) {
+    data <- data %>% scale_data()
+  }
   pred <- by(data, data$.imp, function(x) {
     predict(fit, newdata=x, type="response", ...)
   })
