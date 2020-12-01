@@ -1,10 +1,13 @@
 #' @importFrom methods is
-data_long <- function(data) {
+data_long <- function(data, include=FALSE, clean=TRUE) {
   if(is(data, "mids")){
-    data <- mice::complete(data, action="long") %>% clean_data()
+    data <- mice::complete(data, action="long", include=include)
   }
   if(!".imp" %in% names(data)) {
     stop("Expected data frame of complete data exported from `mice`. Use `mice::complete(data, action='long')` to obtain data in the right format after imputation.")
+  }
+  if(clean){
+    data <- clean_data(data)
   }
   data
 }
@@ -34,4 +37,17 @@ boot_fit <- function(model, data) {
   idx <- sample(1:nrow(data), nrow(data), replace=TRUE)
   newdata <- data[idx,]
   glm(formula(model), family=family(model), data=newdata)
+}
+
+#' @importFrom stats formula
+#' @importFrom stats model.matrix
+get_formula <- function(predictors, outcome, data) {
+  formula <- paste0(outcome, "~", paste(predictors, collapse="+"))
+  predictors <- colnames(model.matrix(stats::formula(formula), data=data %>% data_long(clean=FALSE)))[-1] %>% make.names()
+  paste0(outcome, "~", paste(predictors, collapse="+"))
+}
+
+#' Dummy code factors in a mids object
+expand_factors <- function(data) {
+  data %>% miPredict:::data_long(include=TRUE) %>% clean_data() %>% as("mids")
 }
