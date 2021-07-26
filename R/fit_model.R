@@ -26,6 +26,7 @@
 #' @param s A character string indicating which value of \eqn{\lambda} should be used. Either `lambda.min`
 #' for the optimal \eqn{\lambda} determined by cross-validation or `lambda.1se` for the optimal \eqn{\lambda + 1} standard error.
 #' @param scale Logical indicating whether input data should be scaled.
+#' @param include Character vector of predictor names. If provided the named predictors will not be penalized (and included in all models)
 #' @param predictors A character vector with the names of variables to include as predictors. If this is provided the model is fixed and no variable selection will take place.
 #' 
 #' @return A list with components
@@ -36,7 +37,7 @@
 #' @author Peter Humburg
 #' @export
 fit_model <-
-function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scale=FALSE, predictors) {
+function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scale=FALSE, include=NULL, predictors) {
   s <- match.arg(s)
   ## skip variable selection if a set of predictors is provided
   if(!missing(predictors) && !is.null(predictors) && length(predictors) > 0){
@@ -51,7 +52,7 @@ function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scal
       ## warn if data appears to be unscaled
       warning("Data may require scaling. Consider re-running with `scale = TRUE`.")
     }
-    fit <- select_variables(data, outcome, family)
+    fit <- select_variables(data, outcome, family, include)
     cand_models <- candidate_models(fit, s=s, response = outcome)
     model <- select_model(cand_models, data, family=family)
   }
