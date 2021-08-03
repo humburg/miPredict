@@ -7,10 +7,13 @@
 \method{plot}{cv}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \link{cv}.}
+\item{x}{An object of class cv.}
 
 \item{...}{Further arguments are ignored.}
 }
 \description{
 Create plots to assess predictive performance following cross-validation
+}
+\seealso{
+\code{\link[=crossvalidate]{crossvalidate()}}
 }
