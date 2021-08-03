@@ -47,7 +47,8 @@ get_formula <- function(predictors, outcome, data) {
   paste0(outcome, "~", paste(predictors, collapse="+"))
 }
 
-#' Dummy code factors in a mids object
+# Dummy code factors in a mids object
+#' @importFrom methods as
 expand_factors <- function(data) {
-  data %>% miPredict:::data_long(include=TRUE) %>% clean_data() %>% as("mids")
+  data %>% data_long(include=TRUE) %>% clean_data() %>% as("mids")
 }
