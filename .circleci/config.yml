@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Check package
           no_output_timeout: 240m
-          command: R CMD check *tar.gz
+          command: R CMD check --no-build-vignettes --no-manual *tar.gz
       - run:
           name: Calculate code coverage
           command: r -e 'covr::codecov()'
