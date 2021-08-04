@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: rocker/verse:4.0.3
+      - image: rocker/tidyverse:4.0.3
     steps:
       - checkout
       - run:
@@ -17,7 +17,8 @@ jobs:
       - run:
           name: Check package
           no_output_timeout: 240m
-          command: R CMD check *tar.gz
+          command: R CMD check --no-build-vignettes --no-manual *tar.gz
       - run:
           name: Calculate code coverage
+          no_output_timeout: 60m
           command: r -e 'covr::codecov()'
