@@ -31,3 +31,11 @@ test_that("fixed model with factor predictors works", {
   expect_length(fit$selected_model$fit, nhanes_mids$m)
   expect_s3_class(fit$pooled_model, "binomial")
 })
+
+test_that("predictors can be forced into the model", {
+  expect_warning(fit_free <- fit_model(binom_mids, outcome="y", scale=TRUE), "0 or 1|converge")
+  expect_warning(fit <- fit_model(binom_mids, outcome="y", include="V1", scale=TRUE), "0 or 1|converge")
+  expect_gt(length(coef(fit$pooled_model)), 2)
+  expect_true("V1" %in% names(coef(fit$pooled_model)))
+  testthat::expect_true(!all(coef(fit$pooled_model) %in% coef(fit_free$pooled_model)))
+})

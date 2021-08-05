@@ -10,6 +10,7 @@ fit_model(
   family = "binomial",
   s = c("lambda.min", "lambda.1se"),
   scale = FALSE,
+  include = NULL,
   predictors
 )
 }
@@ -24,6 +25,8 @@ fit_model(
 for the optimal \eqn{\lambda} determined by cross-validation or \code{lambda.1se} for the optimal \eqn{\lambda + 1} standard error.}
 
 \item{scale}{Logical indicating whether input data should be scaled.}
+
+\item{include}{Character vector of predictor names. If provided the named predictors will not be penalized (and included in all models)}
 
 \item{predictors}{A character vector with the names of variables to include as predictors. If this is provided the model is fixed and no variable selection will take place.}
 }
