@@ -1,9 +1,25 @@
+#' Performance metrics for predictive models
+#'
+#' @param model List of fitted models
+#' @param data Imputed data
+#' @param ... Further arguments to be passed to specific methods
+#'
+#' @return Pooled model object
+#' @seealso [pool_model.binomial()], [pool_model.gaussian()]
+#' @export
+#' @rdname pool_model
+pool_model <- function(model, data, ...){
+  UseMethod("pool_model")
+}
+
+
 #' @import mice
 #' @importFrom stats deviance
 #' @importFrom stats extractAIC
+#' @method pool_model binomial
 #' @export
-pool_model <-
-function(model, data) {
+pool_model.binomial <-
+function(model, data, ...) {
   data <- data %>% data_long()
   estimates <- pool(model$fit)
   pooled_coefs <- estimates$pooled[-1, "estimate"]
