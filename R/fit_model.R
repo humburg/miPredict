@@ -56,6 +56,7 @@ function(data, outcome, family="binomial", s=c("lambda.min", "lambda.1se"), scal
     cand_models <- candidate_models(fit, s=s, response = outcome)
     model <- select_model(cand_models, data, family=family)
   }
+  class(model) <- c("modelList", family, class(model))
   pooled_model <- pool_model(model, data)
   class(pooled_model) <- c(pooled_model$family$family, class(pooled_model))
   attr(pooled_model, "scale") <- scale

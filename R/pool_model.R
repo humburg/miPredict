@@ -45,3 +45,4 @@ function(model, data, ...) {
   pooled$offset <- model$fit[[1]]$offset
   pooled
 }
+
