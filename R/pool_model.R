@@ -12,21 +12,17 @@ pool_model <- function(model, data, ...){
   UseMethod("pool_model")
 }
 
-
 #' @import mice
 #' @importFrom stats deviance
 #' @importFrom stats extractAIC
-#' @method pool_model binomial
-#' @export
-pool_model.binomial <-
-function(model, data, ...) {
+pool_model_setup <- function(model, data, family) {
   data <- data %>% data_long()
   estimates <- pool(model$fit)
   pooled_coefs <- estimates$pooled[-1, "estimate"]
   names(pooled_coefs) <- estimates$pooled[-1, "term"]
   terms <- list("(Intercept)"=estimates$pooled[1,"estimate"])
   if(length(pooled_coefs)) terms <- c(terms, as.list(pooled_coefs))
-  pooled <- do.call(makeglm, c(list(model$formula, family="binomial", data=data), terms))
+  pooled <- do.call(makeglm, c(list(model$formula, family=family, data=data), terms))
   pooled$deviance <- mean(sapply(model$fit, deviance))
   pooled$null.deviance <- mean(sapply(model$fit, function(x) x$null.deviance))
   pooled$aic <- mean(sapply(model$fit, extractAIC)[,2])
@@ -40,9 +36,31 @@ function(model, data, ...) {
   pooled$df.residual <- model$fit[[1]]$df.residual
   pooled$df.null <- model$fit[[1]]$df.null
   pooled$call <- model$fit[[1]]$call
+  pooled$call$family <- family
+  pooled$call$formula <- as.formula(paste0(as.character(model$fit[[1]]$formula[[2]]), " ~ ", paste(names(pooled_coefs), collapse="+")))
   pooled$method <- model$fit[[1]]$method
   pooled$control <- model$fit[[1]]$control
   pooled$offset <- model$fit[[1]]$offset
   pooled
 }
+
+
+#' @inheritParams pool_model
+#' @method pool_model binomial
+#' @export
+pool_model.binomial <-
+function(model, data, ...) {
+  pooled <- pool_model_setup(model, data, family="binomial")
+  pooled
+}
+
+
+#' @inheritParams pool_model
+#' @method pool_model binomial
+#' @export
+pool_model.gaussian <-
+  function(model, data, ...) {
+    pooled <- pool_model_setup(model, data, family="gaussian")
+    pooled
+  }
 

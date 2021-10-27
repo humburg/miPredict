@@ -2,22 +2,25 @@
 % Please edit documentation in R/pool_r2.R
 \name{pool_r2}
 \alias{pool_r2}
-\title{Obtain pooled estimates of Nagelkerke's R-squared}
+\title{Pool estimates of R-squared}
 \usage{
-pool_r2(pooled_model, model_fits, data, iter = 1000)
+pool_r2(model, data, ...)
 }
 \arguments{
-\item{pooled_model}{The pooled model returned by \link{fit_model}.}
+\item{data}{Imputed data}
 
-\item{model_fits}{List of model objects as returned by \link{fit_model}.}
+\item{...}{Further arguments to be passed to specific methods}
 
-\item{data}{Imputed dataset}
+\item{pooled_model}{The pooled model returned by \code{\link[=fit_model]{fit_model()}}.}
 
-\item{iter}{Number of bootstrap iterations}
+\item{model_fits}{List of model objects as returned by \code{\link[=fit_model]{fit_model()}}.}
 }
 \value{
 A numeric vector with the pooled estimate of $R^2$ and its variance.
 }
 \description{
-Obtain pooled estimates of Nagelkerke's R-squared
+Pool estimates of R-squared
+}
+\seealso{
+\code{\link[=pool_r2.binomial]{pool_r2.binomial()}}, \code{\link[=pool_r2.gaussian]{pool_r2.gaussian()}}
 }
