@@ -2,9 +2,15 @@
 % Please edit documentation in R/pool_r2.R
 \name{pool_r2}
 \alias{pool_r2}
-\title{Obtain pooled estimates of Nagelkerke's R-squared}
+\title{Obtain pooled estimates of R-squared}
 \usage{
-pool_r2(pooled_model, model_fits, data, iter = 1000)
+pool_r2(
+  pooled_model,
+  model_fits,
+  data,
+  iter = 1000,
+  method = c("nagelkerke", "r2", "adj.r2")
+)
 }
 \arguments{
 \item{pooled_model}{The pooled model returned by \link{fit_model}.}
@@ -13,11 +19,13 @@ pool_r2(pooled_model, model_fits, data, iter = 1000)
 
 \item{data}{Imputed dataset}
 
-\item{iter}{Number of bootstrap iterations}
+\item{iter}{Number of bootstrap iterations (only used for method="nagelkerke")}
+
+\item{method}{Type of R^2 to compute and pool}
 }
 \value{
 A numeric vector with the pooled estimate of $R^2$ and its variance.
 }
 \description{
-Obtain pooled estimates of Nagelkerke's R-squared
+Obtain pooled estimates of R-squared
 }

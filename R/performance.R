@@ -14,12 +14,7 @@ performance <- function(x, ...){
 
 #' Performance metrics for logistic regression models
 #' 
-#' @param data Data to be used in the evaluation.
-#' @param metrics A character vector indicating the metrics to be computed
-#' @param outcome The name of the outcome measure. This should be the name of a variable in `data`.
-#' @param model_fits A list of fitted model objects. Should contain one model for each imputed dataset (required if 'r2' is requested).
-#'
-#' @inheritParams performance
+#' @inheritParams performance.gaussian
 #' @method performance binomial
 #' @importFrom pROC roc
 #' @importFrom pROC ci
@@ -109,6 +104,45 @@ performance.binomial <- function(x, data, outcome, metrics=c("roc", "auc", "spec
   
   perf
 }
+
+#' Performance metrics for linear models
+#'
+#' @param data Data to be used in the evaluation.
+#' @param metrics A character vector indicating the metrics to be computed
+#' @param outcome The name of the outcome measure. This should be the name of a variable in `data`.
+#' @param model_fits A list of fitted model objects. Should contain one model for each imputed dataset.
+#' @inheritParams performance
+#'
+#' @return A list of requested performance metrics.
+#' @include pool_cor.R pool_r2.R
+#' @export
+performance.gaussian <- function(x, data, outcome, metrics=c("r2", "adj.r2", "aic", "cor"), model_fits, ...) {
+  metrics <- match.arg(metrics, several.ok = TRUE)
+  dots <- list(...)
+  data <- data_long(data)
+
+  perf <- vector(mode="list", length=length(metrics))
+  names(perf) <- metrics
+  if("r2" %in% metrics) {
+    perf[["r2"]] <- pool_r2(x, model_fits, method="r2")
+  }
+  if("adj.r2" %in% metrics) {
+    perf[["adj.r2"]] <- pool_r2(x, model_fits, method="adj.r2")
+  }
+  if("aic" %in% metrics) {
+    perf[["aic"]] <- fit$aic
+  }
+  if("cor" %in% metrics){
+    predictions <- predict_outcome(x, data)
+    resp <- do.call(cbind, by(data, data$.imp, `[[`, outcome))
+    cors <- diag(cor(predictions, resp))
+    perf[["cor"]] <- pool_cor(cors)
+  }
+
+  perf
+}
+
+
 
 #' Performance metrics based on cross-validation results
 #' @param x An object of class *cv* as produced by [crossvalidate()]. 
