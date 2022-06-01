@@ -75,3 +75,16 @@ test_that("performace of fixed models can be calculated", {
   expect_named(suppressWarnings(perf_fixed <- performance(fit_fixed$pooled_model, nhanes_mids, "hyp", metrics = c("roc", "auc", "brier", "r2"), 
                                                      fit_fixed$selected_model$fit)), c("roc", "auc", "brier", "r2"))
 })
+
+test_that("Linear model performance can be calculated", {
+  expect_silent(fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE))
+  expect_named(suppressWarnings(perf1 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "r2")), "r2")
+  expect_type(perf1, "list")
+  expect_type(perf1[[1]], "numeric")
+  expect_named(suppressWarnings(perf2 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "adj.r2")), "adj.r2")
+  expect_type(perf2, "list")
+  expect_type(perf2[[1]], "numeric")
+  expect_named(suppressWarnings(perf3 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "cor")), "cor")
+  expect_type(perf3, "list")
+  expect_type(perf3[[1]], "numeric")
+})
