@@ -31,6 +31,7 @@ pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelke
     qbar <- pool.scalar(fisher, se)$qbar
     table <- array(((exp(2 * qbar) - 1)/(1 + exp(2 * qbar)))^2, dim = c(1, 4))
     dimnames(table) <- list("R^2", c("est", "lo 95", "hi 95", "fmi"))
+    table
   } else if(method == "adj.r2"){
     r <- sqrt(sapply(model_fits, function(m) 1 - (m$deviance/m$df.residual)/(m$null.deviance/m$df.null)))
     fisher <- 0.5 * log((r + 1)/(1 - r))
@@ -38,5 +39,6 @@ pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelke
     qbar <- pool.scalar(fisher, se)$qbar
     table <- array(((exp(2 * qbar) - 1)/(1 + exp(2 * qbar)))^2, dim = c(1, 4))
     dimnames(table) <- list("adj R^2", c("est", "lo 95", "hi 95", "fmi"))
+    table
   }
 }

@@ -4,7 +4,7 @@
 #' @param ... Further arguments to be passed to specific methods
 #'
 #' @return A list of performance metrics.
-#' @seealso [performance.binomial()], [performance.cv()]
+#' @seealso [performance.binomial()], [performance.gaussin()], [performance.cv()]
 #' @export
 #' @rdname performance
 performance <- function(x, ...){
@@ -124,10 +124,10 @@ performance.gaussian <- function(x, data, outcome, metrics=c("r2", "adj.r2", "ai
   perf <- vector(mode="list", length=length(metrics))
   names(perf) <- metrics
   if("r2" %in% metrics) {
-    perf[["r2"]] <- pool_r2(x, model_fits, method="r2")
+    perf[["r2"]] <- pool_r2(x, model_fits, data, method="r2")
   }
   if("adj.r2" %in% metrics) {
-    perf[["adj.r2"]] <- pool_r2(x, model_fits, method="adj.r2")
+    perf[["adj.r2"]] <- pool_r2(x, model_fits, data, method="adj.r2")
   }
   if("aic" %in% metrics) {
     perf[["aic"]] <- fit$aic

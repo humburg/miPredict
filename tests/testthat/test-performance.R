@@ -1,6 +1,6 @@
 context("model performance")
 
-test_that("output has expected structure", {
+test_that("output for binomial models has expected structure", {
   expect_named(suppressWarnings(perf1 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "roc")), "roc")
   expect_equal(class(perf1$roc[[1]]), "roc")
   expect_equal(length(perf1$roc), binom_mids$m)
@@ -28,6 +28,12 @@ test_that("output has expected structure", {
                c("roc", "auc", "brier", "hoslem"))
   expect_type(perf5$hoslem, "double")
   expect_length(perf5$hoslem, 3)
+})
+
+test_that("output for Gaussian models has expected structure", {
+  fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE)
+  expect_named(perf1 <- performance(fit$pooled_model, data=nhanes_mids, outcome = "bmi", metrics="r2", model_fits=fit$selected_model$fit))
+  
 })
 
 test_that("missing arguments are handled", {

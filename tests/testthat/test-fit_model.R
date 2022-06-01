@@ -39,3 +39,11 @@ test_that("predictors can be forced into the model", {
   expect_true("V1" %in% names(coef(fit$pooled_model)))
   testthat::expect_true(!all(coef(fit$pooled_model) %in% coef(fit_free$pooled_model)))
 })
+
+test_that("Gaussian models are supported", {
+  fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE)
+  expect_equal(names(fit), c("selected_model", "pooled_model"))
+  expect_length(fit$selected_model$fit, 5)
+  expect_length(coef(fit$pooled_model), 5)
+  expect_equal(class(fit$pooled_model), c("gaussian", "glm", "lm"))
+})
