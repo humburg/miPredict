@@ -4,7 +4,7 @@
 #' @param ... Further arguments to be passed to specific methods
 #'
 #' @return A list of performance metrics.
-#' @seealso [performance.binomial()], [performance.gaussin()], [performance.cv()]
+#' @seealso [performance.binomial()], [performance.gaussian()], [performance.cv()]
 #' @export
 #' @rdname performance
 performance <- function(x, ...){
