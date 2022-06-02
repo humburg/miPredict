@@ -130,7 +130,7 @@ performance.gaussian <- function(x, data, outcome, metrics=c("r2", "adj.r2", "ai
     perf[["adj.r2"]] <- pool_r2(x, model_fits, data, method="adj.r2")
   }
   if("aic" %in% metrics) {
-    perf[["aic"]] <- fit$aic
+    perf[["aic"]] <- x$aic
   }
   if("cor" %in% metrics){
     predictions <- predict_outcome(x, data)

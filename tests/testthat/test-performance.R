@@ -87,4 +87,7 @@ test_that("Linear model performance can be calculated", {
   expect_named(suppressWarnings(perf3 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "cor")), "cor")
   expect_type(perf3, "list")
   expect_type(perf3[[1]], "double")
+  expect_named(suppressWarnings(perf4 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "aic")), "aic")
+  expect_type(perf4, "list")
+  expect_type(perf4[[1]], "double")
 })
