@@ -1,8 +1,8 @@
 Package: miPredict
 Type: Package
 Title: Predictive models from multiply imputed data
-Version: 0.2.0
-Date: 2021-08-05
+Version: 0.2.1
+Date: 2022-06-01
 Authors@R: person("Peter", "Humburg", email = "p.humburg@unsw.edu.au",
                   role = c("aut", "cre"))
 Maintainer: Peter Humburg <p.humburg@unsw.edu.au>
@@ -28,6 +28,8 @@ Collate:
     'hoslem.R'
     'internals.R'
     'makeglm.r'
+    'pool_r2.R'
+    'pool_cor.R'
     'performance.R'
     'plot.R'
     'pool_auc.R'
@@ -35,7 +37,6 @@ Collate:
     'pool_hoslem.R'
     'pool_model.R'
     'pool_predictions.R'
-    'pool_r2.R'
     'pool_roc.R'
     'predict_outcome.R'
     'scale_data.R'

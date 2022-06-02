@@ -10,7 +10,7 @@ function(model, data) {
   names(pooled_coefs) <- estimates$pooled[-1, "term"]
   terms <- list("(Intercept)"=estimates$pooled[1,"estimate"])
   if(length(pooled_coefs)) terms <- c(terms, as.list(pooled_coefs))
-  pooled <- do.call(makeglm, c(list(model$formula, family="binomial", data=data), terms))
+  pooled <- do.call(makeglm, c(list(model$formula, family=model$fit[[1]]$family$family, data=data), terms))
   pooled$deviance <- mean(sapply(model$fit, deviance))
   pooled$null.deviance <- mean(sapply(model$fit, function(x) x$null.deviance))
   pooled$aic <- mean(sapply(model$fit, extractAIC)[,2])

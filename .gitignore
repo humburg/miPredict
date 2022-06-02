@@ -7,3 +7,4 @@
 .local
 .bash_history
 .config/rstudio/rstudio-prefs.json
+tests/testthat/Rplots.pdf

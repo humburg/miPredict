@@ -18,5 +18,5 @@ A list of performance metrics.
 Performance metrics for predictive models
 }
 \seealso{
-\code{\link[=performance.binomial]{performance.binomial()}}, \code{\link[=performance.cv]{performance.cv()}}
+\code{\link[=performance.binomial]{performance.binomial()}}, \code{\link[=performance.gaussian]{performance.gaussian()}}, \code{\link[=performance.cv]{performance.cv()}}
 }

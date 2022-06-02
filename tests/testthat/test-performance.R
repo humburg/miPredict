@@ -1,6 +1,6 @@
 context("model performance")
 
-test_that("output has expected structure", {
+test_that("output for binomial models has expected structure", {
   expect_named(suppressWarnings(perf1 <- performance(binom_fit$pooled_model, binom_mids, "y", metrics = "roc")), "roc")
   expect_equal(class(perf1$roc[[1]]), "roc")
   expect_equal(length(perf1$roc), binom_mids$m)
@@ -28,6 +28,12 @@ test_that("output has expected structure", {
                c("roc", "auc", "brier", "hoslem"))
   expect_type(perf5$hoslem, "double")
   expect_length(perf5$hoslem, 3)
+})
+
+test_that("output for Gaussian models has expected structure", {
+  fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE)
+  expect_named(perf1 <- performance(fit$pooled_model, data=nhanes_mids, outcome = "bmi", metrics="r2", model_fits=fit$selected_model$fit))
+  
 })
 
 test_that("missing arguments are handled", {
@@ -68,4 +74,20 @@ test_that("performace of fixed models can be calculated", {
   expect_silent(fit_fixed <- fit_model(nhanes_mids, outcome="hyp", predictors="bmi"))
   expect_named(suppressWarnings(perf_fixed <- performance(fit_fixed$pooled_model, nhanes_mids, "hyp", metrics = c("roc", "auc", "brier", "r2"), 
                                                      fit_fixed$selected_model$fit)), c("roc", "auc", "brier", "r2"))
+})
+
+test_that("Linear model performance can be calculated", {
+  expect_silent(fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE))
+  expect_named(suppressWarnings(perf1 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "r2")), "r2")
+  expect_type(perf1, "list")
+  expect_type(perf1[[1]], "double")
+  expect_named(suppressWarnings(perf2 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "adj.r2")), "adj.r2")
+  expect_type(perf2, "list")
+  expect_type(perf2[[1]], "double")
+  expect_named(suppressWarnings(perf3 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "cor")), "cor")
+  expect_type(perf3, "list")
+  expect_type(perf3[[1]], "double")
+  expect_named(suppressWarnings(perf4 <- performance(fit$pooled_model, nhanes_mids, model_fits=fit$selected_model$fit, "bmi", metrics = "aic")), "aic")
+  expect_type(perf4, "list")
+  expect_type(perf4[[1]], "double")
 })
