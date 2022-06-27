@@ -19,6 +19,8 @@ test_that("R2 has expected format", {
   pooled <- pool_r2(fit$pooled_model, fit$selected_model$fit, nhanes_long, method="r2")
   expect_type(pooled, "double")
   expect_length(pooled, 4)
+  expect_true(pooled[1,1] > pooled[1,2])
+  expect_true(pooled[1,2] < pooled[1,3])
 })
 
 test_that("Adjusted R2 has expected format", {

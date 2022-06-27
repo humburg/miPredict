@@ -26,18 +26,18 @@ pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelke
     c(R2=pooled$qbar, sd=sqrt(pooled$t))
   } else if(method == "r2"){
     r <- sqrt(sapply(model_fits, function(m) 1 - m$deviance/m$null.deviance))
-    fisher <- 0.5 * log((r + 1)/(1 - r))
-    se <- 1/nrow(subset(data, .imp == 1))
-    qbar <- pool.scalar(fisher, se)$qbar
-    table <- array(((exp(2 * qbar) - 1)/(1 + exp(2 * qbar)))^2, dim = c(1, 4))
+    fisher <- fisher.trans(r)
+    se <- 1/sqrt(nrow(subset(data, .imp == 1))-3)
+    pooled <- pool.scalar(fisher, rep(se, max(data$.imp)), n=nrow(subset(data, .imp == 1)))
+    table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
     dimnames(table) <- list("R^2", c("est", "lo 95", "hi 95", "fmi"))
     table
   } else if(method == "adj.r2"){
     r <- sqrt(sapply(model_fits, function(m) 1 - (m$deviance/m$df.residual)/(m$null.deviance/m$df.null)))
-    fisher <- 0.5 * log((r + 1)/(1 - r))
-    se <- 1/nrow(subset(data, .imp == 1))
-    qbar <- pool.scalar(fisher, se)$qbar
-    table <- array(((exp(2 * qbar) - 1)/(1 + exp(2 * qbar)))^2, dim = c(1, 4))
+    fisher <- fisher.trans(r)
+    se <- 1/sqrt(nrow(subset(data, .imp == 1))-3)
+    pooled <- pool.scalar(fisher, rep(se, max(data$.imp)), n=nrow(subset(data, .imp == 1)))
+    table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
     dimnames(table) <- list("adj R^2", c("est", "lo 95", "hi 95", "fmi"))
     table
   }
