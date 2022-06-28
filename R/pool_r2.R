@@ -13,6 +13,7 @@
 pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelkerke", "r2", "adj.r2")) {
   method <- match.arg(method)
   data <- data_long(data)
+  n <- nrow(subset(data, .imp == 1))
 
   if(method == "nagelkerke"){
     obs <- unlist(sapply(model_fits, NagelkerkeR2)[2,])
@@ -22,23 +23,22 @@ pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelke
       boot_r2 <- unlist(sapply(boot, NagelkerkeR2)[2,])
       vars[i] <- sd(boot_r2)^2
     }
-    pooled <- pool.scalar(obs, vars)
-    c(R2=pooled$qbar, sd=sqrt(pooled$t))
+    .pool_r(sqrt(obs), vars, n, "Nagelkerke's R2")
   } else if(method == "r2"){
     r <- sqrt(sapply(model_fits, function(m) 1 - m$deviance/m$null.deviance))
-    fisher <- fisher.trans(r)
     se <- 1/sqrt(nrow(subset(data, .imp == 1))-3)
-    pooled <- pool.scalar(fisher, rep(se, max(data$.imp)), n=nrow(subset(data, .imp == 1)))
-    table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
-    dimnames(table) <- list("R^2", c("est", "lo 95", "hi 95", "fmi"))
-    table
+    .pool_r(r, se^2, n, "R2")
   } else if(method == "adj.r2"){
     r <- sqrt(sapply(model_fits, function(m) 1 - (m$deviance/m$df.residual)/(m$null.deviance/m$df.null)))
-    fisher <- fisher.trans(r)
     se <- 1/sqrt(nrow(subset(data, .imp == 1))-3)
-    pooled <- pool.scalar(fisher, rep(se, max(data$.imp)), n=nrow(subset(data, .imp == 1)))
-    table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
-    dimnames(table) <- list("adj R^2", c("est", "lo 95", "hi 95", "fmi"))
-    table
+    .pool_r(r, se^2, n, "Adj. R2")
   }
+}
+
+.pool_r <- function(r, var, n, label) {
+  fisher <- fisher.trans(r)
+  pooled <- pool.scalar(fisher, rep(var, length(r)), n=n)
+  table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
+  dimnames(table) <- list(label, c("est", "lo 95", "hi 95", "fmi"))
+  table
 }

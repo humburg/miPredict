@@ -11,7 +11,9 @@ test_that("Nagelkerke's R2 can be selected", {
 test_that("Nagelkerke's R2 output has expected format", {
   pooled <- expect_warning(pool_r2(binom_fit$pooled_model, binom_fit$selected_model$fit, complete_data, nrow(binomData)), "(did not converge)|(numerically 0 or 1)")
   expect_type(pooled, "double")
-  expect_length(pooled, 2)
+  expect_length(pooled, 4)
+  expect_true(pooled[1,1] > pooled[1,2])
+  expect_true(pooled[1,2] < pooled[1,3])
 })
 
 test_that("R2 has expected format", {
@@ -28,4 +30,6 @@ test_that("Adjusted R2 has expected format", {
   pooled <- pool_r2(fit$pooled_model, fit$selected_model$fit, nhanes_long, method="adj.r2")
   expect_type(pooled, "double")
   expect_length(pooled, 4)
+  expect_true(pooled[1,1] > pooled[1,2])
+  expect_true(pooled[1,2] < pooled[1,3])
 })
