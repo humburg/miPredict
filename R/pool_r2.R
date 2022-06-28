@@ -38,7 +38,7 @@ pool_r2 <- function(pooled_model, model_fits, data, iter=1000, method=c("nagelke
 .pool_r <- function(r, var, n, label) {
   fisher <- fisher.trans(r)
   pooled <- pool.scalar(fisher, rep(var, length(r)), n=n)
-  table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(pooled$qbar - 1.96*sqrt(pooled$t))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
+  table <- array(c(fisher.backtrans(pooled$qbar)^2, fisher.backtrans(max(pooled$qbar - 1.96*sqrt(pooled$t), 0))^2, min(fisher.backtrans(pooled$qbar + 1.96*sqrt(pooled$t))^2, 1), pooled$fmi), dim = c(1, 4))
   dimnames(table) <- list(label, c("est", "lo 95", "hi 95", "fmi"))
   table
 }
