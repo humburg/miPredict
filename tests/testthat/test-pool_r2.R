@@ -33,3 +33,12 @@ test_that("Adjusted R2 has expected format", {
   expect_true(pooled[1,1] > pooled[1,2])
   expect_true(pooled[1,2] < pooled[1,3])
 })
+
+test_that("Pooled R2 respects bounds", {
+  r <- c(0.27, 0.2, 0.3, 0.25, 0.26)
+  var <- 1/50
+  pooled <- .pool_r(r, rep(var,5), 53, "test")
+  expect_lt(pooled[1,2], pooled[1,1])
+  expect_lt(pooled[1,1], pooled[1,3])
+  expect_equal(pooled[1,2], 0)
+})
