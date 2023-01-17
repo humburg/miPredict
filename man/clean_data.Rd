@@ -11,7 +11,7 @@ clean_data(data)
 }
 \value{
 A \emph{data.frame} of the same structure as \code{data} but with all
-factors converted to integer vectors.
+factors converted to integer (dummy coded) vectors.
 }
 \description{
 Prepare data for use with glmnet

@@ -8,6 +8,10 @@ test_that("multilevel factors are dummy coded", {
   expect_named(clean_data(nhanes_long), c(".imp", ".id", "bmi", "chl", "age40.59", "age60.99", "hyp"))
 })
 
+test_that("observations with missing factors are not dropped", {
+  expect_equal(nrow(nhanes_miss), nrow(clean_data(nhanes_miss)))
+})
+
 test_that("numeric values are unchanged",{
   expect_equal(clean_data(nhanes_long)$bmi, nhanes_long$bmi)
 })

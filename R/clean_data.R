@@ -3,8 +3,11 @@
 #' @param data A *data.frame*.
 #'
 #' @return A *data.frame* of the same structure as `data` but with all
-#' factors converted to integer vectors.
+#' factors converted to integer (dummy coded) vectors.
 #' @importFrom dplyr full_join
+#' @importFrom dplyr mutate
+#' @importFrom dplyr left_join
+#' @importFrom dplyr select
 #' @importFrom stats model.matrix
 #' @export
 #' @examples
@@ -15,6 +18,7 @@ clean_data <- function(data){
   if(length(factors)){
     expanded <- vector(mode="list", length=length(factors))
     names(expanded) <- names(data)[factors]
+    data <- mutate(data, .clean_id=as.character(1:n()))
     for(i in names(expanded)){
       expanded[[i]] <- model.matrix(as.formula(paste("~ 1", i, sep="+")), data=data)[, -1, drop=FALSE]
       expanded[[i]] <- cbind(id=rownames(expanded[[i]]), as.data.frame(expanded[[i]]))
@@ -26,8 +30,7 @@ clean_data <- function(data){
       expanded <- expanded[[1]]
     }
     data <- data[, -factors]
-    expanded <- expanded[,-which(names(expanded) == "id"), drop=FALSE]
-    data <- cbind(data, expanded)
+    data <- left_join(data, expanded, by=c(".clean_id"="id")) %>% select(-.clean_id)
   }
   names(data) <- make.names(names(data))
   

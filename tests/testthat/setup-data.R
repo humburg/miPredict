@@ -3,10 +3,16 @@ library(mice)
 set.seed(42)
 
 ## Impute data
-nhanes_large <- nhanes2 %>% dplyr::slice_sample(n=100, replace=TRUE)
-nhanes_mids <- mice(nhanes_large, m=5, printFlag=FALSE) 
+nhanes_large <- nhanes2 %>% dplyr::slice_sample(n=50, replace=TRUE)
+nhanes_large2 <- nhanes_large
+levels(nhanes_large2$hyp) <- c("yes", "no")
+nhanes_large <- rbind(nhanes_large, nhanes_large2)
+nhanes_mids <- mice(nhanes_large, m=5, printFlag=FALSE)
 nhanes_long <- complete(nhanes_mids, action="long")
 nhanes_clean <- nhanes_long %>% clean_data()
+
+nhanes_miss <- nhanes2
+nhanes_miss[2, c(1,3)] <- NA
 
 ## Model fit
 library(glmnet)
