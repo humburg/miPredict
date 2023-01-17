@@ -54,6 +54,7 @@ test_that("cross-validation works with fixed model", {
 })
 
 test_that("cross-validation works with fixed categorical predictors", {
+  set.seed(117)
   cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2, predictors="age"))
   expect_s3_class(cv, "cv")
   expect_length(cv, 2)

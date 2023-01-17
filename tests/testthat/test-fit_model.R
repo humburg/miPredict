@@ -1,7 +1,7 @@
 context("Model fitting")
 
 test_that("output has expected structure", {
-  expect_warning(fit <- fit_model(nhanes_mids, outcome="hyp", scale=TRUE), "0 or 1")
+  expect_silent(fit <- fit_model(nhanes_mids, outcome="hyp", scale=TRUE))
   expect_named(fit, c("selected_model", "pooled_model"))
   expect_named(fit$selected_model, c("formula", "fit"))
   expect_s3_class(fit$selected_model$formula, "formula")
@@ -44,6 +44,7 @@ test_that("Gaussian models are supported", {
   fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE)
   expect_equal(names(fit), c("selected_model", "pooled_model"))
   expect_length(fit$selected_model$fit, 5)
-  expect_length(coef(fit$pooled_model), 5)
+  expect_length(coef(fit$selected_model$fit[[1]]), 4)
+  expect_length(coef(fit$pooled_model), 4)
   expect_equal(class(fit$pooled_model), c("gaussian", "glm", "lm"))
 })

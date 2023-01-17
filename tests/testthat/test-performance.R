@@ -49,6 +49,7 @@ test_that("arguments are passed on", {
 })
 
 test_that("pooled CV performance can be calculated", {
+  set.seed(171)
   cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
   set.seed(976)
   expect_named(perf <- performance(cv, call_imputed(nhanes_mids, "hyp")), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
@@ -59,6 +60,7 @@ test_that("pooled CV performance can be calculated", {
 })
 
 test_that("CV performance can be pooled", {
+  set.seed(171)
   cv <- suppressWarnings(crossvalidate(nhanes_mids, "hyp", k=2))
   expect_named(perf <- performance(cv, call_imputed(nhanes_mids, "hyp")), c("roc", "auc", "specificity", "sensitivity", "accuracy", "precision", "brier"))
   expect_s3_class(perf$roc, "roc")
