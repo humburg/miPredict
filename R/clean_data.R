@@ -7,7 +7,7 @@
 #' @importFrom dplyr full_join
 #' @importFrom dplyr mutate
 #' @importFrom dplyr left_join
-#' @import_from dplyr select
+#' @importFrom dplyr select
 #' @importFrom stats model.matrix
 #' @export
 #' @examples
