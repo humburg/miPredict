@@ -1,5 +1,7 @@
 library(mice)
 
+options(tidyselect_verbosity = "verbose")
+
 set.seed(42)
 
 ## Impute data
