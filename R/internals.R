@@ -41,9 +41,11 @@ boot_fit <- function(model, data) {
 
 #' @importFrom stats formula
 #' @importFrom stats model.matrix
+#' @importFrom mice complete
+#' @importFrom dplyr select
 get_formula <- function(predictors, outcome, data) {
-  formula <- paste0(outcome, "~", paste(predictors, collapse="+"))
-  predictors <- colnames(model.matrix(stats::formula(formula), data=data %>% data_long(clean=FALSE)))[-1] %>% make.names()
+  predictors <- names(data %>% complete(action="long", include=TRUE) %>% select(.id, .imp, all_of(predictors), all_of(outcome)) %>% as.mids() %>% data_long())
+  predictors <- predictors[!predictors%in% c(outcome, ".id", ".imp")] %>% make.names()
   paste0(outcome, "~", paste(predictors, collapse="+"))
 }
 
