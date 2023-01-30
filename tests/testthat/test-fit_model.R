@@ -41,6 +41,7 @@ test_that("predictors can be forced into the model", {
 })
 
 test_that("Gaussian models are supported", {
+  set.seed(64)
   expect_silent(fit <- fit_model(nhanes_mids, outcome="bmi", family="gaussian", scale=TRUE))
   expect_equal(names(fit), c("selected_model", "pooled_model"))
   expect_length(fit$selected_model$fit, 5)
