@@ -5,7 +5,7 @@ select_variables <-
 function(data, response, family="binomial", include, ...){
   var_names <- names(data)[-(1:2)]
   fit_formula <- as.formula(paste0(response, " ~ ", paste(var_names[var_names != response], collapse="+")))
-  penalty.factor = rep(1, length(var_names))
+  penalty.factor = rep(1, length(var_names)-1)
   if(!missing(include) && !is.null(include) && length(include) > 0) {
     penalty.factor[var_names %in% include] <- 0
   }
